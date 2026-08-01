@@ -1917,6 +1917,158 @@ button:active {
     0 0 20px rgba(255, 255, 255, 0.32);
 }
 
+/* Momente Soul Music */
+
+.moment-section {
+  margin:
+    18px 0 14px;
+
+  padding:
+    13px;
+
+  border-radius:
+    16px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 210, 91, 0.08),
+      rgba(255, 57, 111, 0.055)
+    );
+
+  border:
+    1px solid
+    rgba(255, 217, 106, 0.18);
+}
+
+.moment-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, 1fr);
+
+  gap:
+    9px;
+}
+
+.moment-grid button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap:
+    8px;
+
+  min-height:
+    48px;
+
+  padding:
+    10px 12px;
+
+  color:
+    rgba(255, 255, 255, 0.92);
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(39, 38, 65, 0.98),
+      rgba(22, 21, 40, 0.98)
+    );
+
+  border:
+    1px solid
+    rgba(255, 217, 106, 0.18);
+}
+
+.moment-grid button small {
+  color:
+    rgba(255, 217, 106, 0.68);
+
+  font-size:
+    9px;
+
+  letter-spacing:
+    0.4px;
+}
+
+.moment-grid button.active {
+  color:
+    #120d08;
+
+  background:
+    linear-gradient(
+      100deg,
+      #ffd765,
+      #ff9e41,
+      #ff496f
+    );
+
+  border-color:
+    #fff0b5;
+
+  box-shadow:
+    0 0 22px rgba(255, 190, 72, 0.42),
+    inset 0 0 12px rgba(255, 255, 255, 0.35);
+}
+
+.moment-grid button.active small {
+  color:
+    rgba(32, 15, 7, 0.72);
+}
+
+#momentStatus[data-state="active"] {
+  color:
+    #ffe797;
+
+  border-color:
+    rgba(255, 211, 91, 0.32);
+
+  box-shadow:
+    inset 0 0 16px rgba(255, 187, 59, 0.08);
+}
+
+#stage[data-soul-moment="welcome"] #logoGroup,
+#stage[data-soul-moment="original"] #logoGroup {
+  filter:
+    drop-shadow(0 0 18px rgba(255, 215, 98, 0.72))
+    drop-shadow(0 0 42px rgba(255, 173, 40, 0.30));
+}
+
+#stage[data-soul-moment="follow"] #tiktokButton {
+  animation:
+    soul-moment-follow-pulse
+    1.15s ease-in-out infinite;
+}
+
+#stage[data-soul-moment="thank-you"] #logoGroup {
+  filter:
+    drop-shadow(0 0 20px rgba(255, 72, 105, 0.68))
+    drop-shadow(0 0 44px rgba(255, 181, 194, 0.30));
+}
+
+@keyframes soul-moment-follow-pulse {
+  0%,
+  100% {
+    filter:
+      drop-shadow(0 0 13px rgba(255, 35, 73, 0.58))
+      brightness(1);
+  }
+
+  50% {
+    filter:
+      drop-shadow(0 0 30px rgba(255, 35, 73, 0.94))
+      drop-shadow(0 0 52px rgba(255, 211, 91, 0.42))
+      brightness(1.18);
+  }
+}
+
+body[data-quality="performance"]
+  #stage[data-soul-moment]
+  #logoGroup {
+  filter:
+    drop-shadow(0 0 15px rgba(255, 205, 83, 0.48));
+}
+
 /* Acțiuni */
 
 .action-grid {
