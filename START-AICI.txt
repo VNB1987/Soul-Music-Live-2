@@ -1,0 +1,37 @@
+SOUL MUSIC LIVE 2 — DESIGN V2 FINAL
+====================================
+
+1. Extrage complet arhiva ZIP într-un folder nou.
+2. Închide orice fereastră veche „Soul Music Local Server”.
+3. Dă dublu-click pe start-live.bat.
+4. Verifică în browser insigna:
+   DESIGN V2 FINAL • BUILD 2026.08.01
+5. Permite accesul la dispozitivele audio.
+6. Selectează CABLE Output pentru muzică.
+7. Selectează microfonul real pentru voce.
+8. Apasă „Verifică LIVE”.
+
+În TikTok LIVE Studio:
+
+URL: http://127.0.0.1:8766
+Lățime: 1920
+Înălțime: 1080
+FPS: 60
+
+IMPORTANT
+---------
+
+Nu deschide index.html direct și nu porni proiectul din folderul vechi.
+Folosește întotdeauna start-live.bat din acest folder.
+
+Dacă launcherul spune că portul 8766 nu răspunde cu Design V2 Final,
+închide serverul Soul Music vechi și pornește din nou start-live.bat.
+
+Comenzi rapide:
+
+1–4          Moduri Calm / Live / Party / Legendary
+Shift+1–6    Momente Soul Music
+C            Arată sau ascunde panoul
+F            Fullscreen
+L            Blochează comenzile
+R            Reset
