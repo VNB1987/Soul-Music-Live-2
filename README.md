@@ -27,6 +27,18 @@ SoulSceneGraph.setVisible("ticker", false);
 SoulSceneGraph.reset();
 ```
 
+## Etapa 9 — Soul Music Live 2 Visual Experience
+
+Etapa 9 reconstruiește complet identitatea vizuală, păstrând motorul audio
+și toate modulele din Etapele 0–8:
+
+- scenă cinematică modernă, cu profunzime și atmosferă holografică;
+- portal audio-reactiv în jurul logo-ului original Soul Music;
+- zone complet redesenate pentru comunitate și camera creatorului;
+- TikTok, LIVE, Now Playing și ticker integrate într-un HUD unitar;
+- stare statică elegantă fără audio și intensificare controlată la muzică/voce;
+- panou de control redesenat, cu aceleași dispozitive și comenzi funcționale.
+
 ## Pornire pentru TikTok LIVE Studio
 
 1. Descarcă proiectul pe calculatorul Windows.
