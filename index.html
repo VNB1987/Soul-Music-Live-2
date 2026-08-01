@@ -545,6 +545,41 @@
     </section>
 
 
+    <!-- MEMORIE ȘI PORNIRE AUTOMATĂ -->
+    <section class="memory-section">
+
+      <div class="memory-copy">
+        <div class="control-section-title">
+          MEMORIE ENGINE
+        </div>
+
+        <div id="memoryStatus" data-state="loading">
+          Memorie: se verifică...
+        </div>
+      </div>
+
+      <label class="memory-toggle" for="autoStartMemory">
+        <input
+          id="autoStartMemory"
+          type="checkbox"
+          checked
+        >
+        <span>
+          Autostart audio
+          <small>doar dispozitive confirmate</small>
+        </span>
+      </label>
+
+      <button
+        id="clearEngineMemory"
+        type="button"
+      >
+        Șterge memoria
+      </button>
+
+    </section>
+
+
     <!-- ACȚIUNI -->
     <section class="action-grid">
 
@@ -671,6 +706,8 @@
   <script src="now-playing.js"></script>
 
   <script src="moments.js"></script>
+
+  <script src="memory.js"></script>
 
   <script src="live-check.js"></script>
 
