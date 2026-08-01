@@ -15,6 +15,24 @@ de 900 × 132 px care rămâne stabilă și nu mai urmează mișcarea camerei.
 - zonă sigură: 23 px după cadrul stâng și minimum 105 px înainte de TikTok;
 - efectele costisitoare se reduc automat pe profilurile Performance/Emergency.
 
+## Design V2 — Pasul 6: momente Soul Music
+
+`moments.js` adaugă șase momente editoriale care pot fi lansate din panou sau
+de la tastatură, fără a opri automatizarea Scene Director:
+
+- `Shift+1` — Bun venit;
+- `Shift+2` — Follow;
+- `Shift+3` — Mulțumesc;
+- `Shift+4` — Original Music;
+- `Shift+5` — Bass Drop;
+- `Shift+6` — Legendary.
+
+Fiecare moment combină o scenă a orgii cu propoziția potrivită din banner, are
+o durată controlată și revine automat la regia audio. Un moment nou îl
+înlocuiește sigur pe cel activ, iar apăsările repetate sunt filtrate. Microfonul
+real rămâne prioritar: scena roșie întrerupe temporar momentul, după care acesta
+continuă până la expirare. Reset oprește imediat orice moment manual.
+
 ## Design V2 — Pasul 4: banner inteligent
 
 `smart-banner.js` înlocuiește rularea continuă greu de citit cu mesaje
