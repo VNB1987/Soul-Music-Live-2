@@ -1,0 +1,1525 @@
+:root {
+  --stage-width: 1920;
+  --stage-height: 1080;
+
+  --background-1: #020207;
+  --background-2: #080714;
+  --background-3: #03030a;
+
+  --panel-dark: rgba(5, 7, 18, 0.96);
+  --panel-inner: rgba(2, 4, 12, 0.98);
+
+  --gold: #ffd96a;
+  --gold-light: #fff1b0;
+  --gold-dark: #b76a10;
+
+  --red: #ff294f;
+  --wine: #770020;
+  --dark-red: #3b000e;
+
+  --cyan: #28e8ff;
+  --blue: #2b8fff;
+  --pink: #ff35d3;
+  --violet: #9a4dff;
+  --green: #4cff8f;
+  --orange: #ff8b38;
+
+  --white: #ffffff;
+  --text-soft: rgba(255, 255, 255, 0.82);
+}
+
+/* =========================================================
+   RESET GENERAL
+========================================================= */
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #000;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+
+button,
+select,
+input {
+  font: inherit;
+}
+
+button {
+  border: 0;
+  cursor: pointer;
+}
+
+img {
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* =========================================================
+   VIEWPORT + SCENĂ FIXĂ 1920 × 1080
+========================================================= */
+
+#viewport {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: #000;
+}
+
+#stage {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+
+  width: 1920px;
+  height: 1080px;
+
+  transform-origin: center center;
+
+  overflow: hidden;
+
+  background:
+    radial-gradient(
+      circle at 51% 37%,
+      rgba(48, 26, 83, 0.42),
+      transparent 29%
+    ),
+    radial-gradient(
+      circle at 83% 40%,
+      rgba(0, 140, 255, 0.09),
+      transparent 25%
+    ),
+    radial-gradient(
+      circle at 18% 42%,
+      rgba(255, 0, 150, 0.08),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 50% 86%,
+      rgba(255, 160, 40, 0.04),
+      transparent 28%
+    ),
+    linear-gradient(
+      180deg,
+      var(--background-1),
+      var(--background-2) 68%,
+      var(--background-3)
+    );
+}
+
+/* Fundal discret de grilă */
+
+#stage::before {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  z-index: 0;
+
+  pointer-events: none;
+
+  opacity: 0.16;
+
+  background-image:
+    linear-gradient(
+      rgba(255, 255, 255, 0.025) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.025) 1px,
+      transparent 1px
+    );
+
+  background-size:
+    70px 70px,
+    70px 70px;
+
+  mask-image:
+    linear-gradient(
+      180deg,
+      transparent,
+      rgba(0, 0, 0, 0.72) 45%,
+      rgba(0, 0, 0, 0.92)
+    );
+}
+
+/* Vignetă cinematică */
+
+#stage::after {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  z-index: 50;
+
+  pointer-events: none;
+
+  box-shadow:
+    inset 0 0 130px rgba(0, 0, 0, 0.76),
+    inset 0 -60px 100px rgba(0, 0, 0, 0.38);
+}
+
+/* =========================================================
+   CANVAS-URI
+========================================================= */
+
+#ambientCanvas,
+#visualizerCanvas,
+#effectsCanvas {
+  position: absolute;
+  inset: 0;
+
+  width: 1920px;
+  height: 1080px;
+
+  pointer-events: none;
+}
+
+#ambientCanvas {
+  z-index: 1;
+}
+
+#visualizerCanvas {
+  z-index: 7;
+}
+
+#effectsCanvas {
+  z-index: 12;
+}
+
+/* =========================================================
+   ELEMENTE REACTIVE COMUNE
+========================================================= */
+
+.reactive-frame {
+  position: absolute;
+
+  overflow: hidden;
+
+  background: var(--panel-dark);
+
+  border-radius: 30px;
+
+  z-index: 8;
+
+  transform-origin: center center;
+
+  box-shadow:
+    0 20px 55px rgba(0, 0, 0, 0.70),
+    inset 0 0 26px rgba(255, 255, 255, 0.025);
+
+  transition:
+    transform 0.08s linear,
+    filter 0.08s linear;
+}
+
+.frame-surface {
+  position: absolute;
+  inset: 14px;
+
+  border-radius: 22px;
+
+  overflow: hidden;
+
+  background:
+    radial-gradient(
+      circle at 50% 22%,
+      rgba(70, 42, 120, 0.17),
+      transparent 38%
+    ),
+    radial-gradient(
+      circle at 30% 78%,
+      rgba(0, 130, 220, 0.08),
+      transparent 33%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(11, 14, 32, 0.98),
+      rgba(2, 4, 12, 0.99)
+    );
+
+  box-shadow:
+    inset 0 0 30px rgba(255, 255, 255, 0.025),
+    inset 0 0 80px rgba(0, 0, 0, 0.42);
+}
+
+.frame-neon {
+  position: absolute;
+  inset: 0;
+
+  pointer-events: none;
+
+  border-radius: inherit;
+
+  border:
+    4px solid
+    rgba(40, 232, 255, 0.48);
+
+  opacity: 0.78;
+
+  box-shadow:
+    0 0 12px rgba(40, 232, 255, 0.60),
+    0 0 26px rgba(255, 53, 211, 0.40),
+    0 0 56px rgba(43, 143, 255, 0.24),
+    inset 0 0 20px rgba(255, 255, 255, 0.06);
+
+  transition:
+    border-color 0.10s linear,
+    opacity 0.10s linear,
+    box-shadow 0.10s linear;
+}
+
+/* Runner CSS de rezervă */
+
+.frame-runner {
+  position: absolute;
+
+  width: 180px;
+  height: 7px;
+
+  top: -2px;
+  left: 20px;
+
+  border-radius: 999px;
+
+  pointer-events: none;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.96),
+      transparent
+    );
+
+  filter: blur(1px);
+
+  box-shadow:
+    0 0 16px rgba(255, 255, 255, 0.86),
+    0 0 28px rgba(40, 232, 255, 0.50);
+
+  opacity: 0.42;
+}
+
+/* Colțuri tehnice */
+
+.frame-corners {
+  position: absolute;
+  inset: 0;
+
+  pointer-events: none;
+}
+
+.frame-corners span {
+  position: absolute;
+
+  width: 38px;
+  height: 38px;
+
+  opacity: 0.72;
+
+  border-color: rgba(255, 255, 255, 0.50);
+}
+
+.frame-corners span:nth-child(1) {
+  left: 10px;
+  top: 10px;
+
+  border-left: 2px solid;
+  border-top: 2px solid;
+}
+
+.frame-corners span:nth-child(2) {
+  right: 10px;
+  top: 10px;
+
+  border-right: 2px solid;
+  border-top: 2px solid;
+}
+
+.frame-corners span:nth-child(3) {
+  right: 10px;
+  bottom: 10px;
+
+  border-right: 2px solid;
+  border-bottom: 2px solid;
+}
+
+.frame-corners span:nth-child(4) {
+  left: 10px;
+  bottom: 10px;
+
+  border-left: 2px solid;
+  border-bottom: 2px solid;
+}
+
+/* =========================================================
+   DREPTUNGHIUL PRINCIPAL — DE SUS PÂNĂ JOS
+========================================================= */
+
+#leftFrame {
+  left: 22px;
+  top: 18px;
+
+  width: 520px;
+  height: 1044px;
+
+  border-radius: 30px;
+}
+
+#leftFrame .frame-surface {
+  background:
+    radial-gradient(
+      circle at 50% 20%,
+      rgba(83, 44, 133, 0.20),
+      transparent 40%
+    ),
+    radial-gradient(
+      circle at 50% 82%,
+      rgba(0, 128, 215, 0.08),
+      transparent 32%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(11, 14, 32, 0.98),
+      rgba(2, 4, 12, 0.99)
+    );
+}
+
+/* =========================================================
+   LOGO CENTRAL — FĂRĂ PĂTRAT, FĂRĂ CERC VIZIBIL
+========================================================= */
+
+#logoArea {
+  position: absolute;
+
+  left: 575px;
+  top: 105px;
+
+  width: 770px;
+  height: 525px;
+
+  z-index: 10;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  pointer-events: none;
+}
+
+#soulLogo {
+  position: relative;
+
+  z-index: 5;
+
+  width: 82%;
+  max-height: 86%;
+
+  object-fit: contain;
+
+  transform-origin: center center;
+
+  filter:
+    drop-shadow(
+      0 18px 34px
+      rgba(0, 0, 0, 0.96)
+    )
+    drop-shadow(
+      0 0 14px
+      rgba(255, 217, 106, 0.23)
+    );
+
+  transition:
+    transform 0.06s linear,
+    filter 0.08s linear;
+}
+
+#logoAmbientGlow {
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  width: 620px;
+  height: 350px;
+
+  transform:
+    translate(-50%, -50%);
+
+  border-radius: 50%;
+
+  opacity: 0.55;
+
+  filter: blur(24px);
+
+  background:
+    radial-gradient(
+      ellipse at center,
+      rgba(255, 214, 92, 0.09),
+      rgba(255, 53, 211, 0.05) 42%,
+      transparent 72%
+    );
+}
+
+#logoAfterglow {
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  width: 700px;
+  height: 390px;
+
+  transform:
+    translate(-50%, -50%);
+
+  border-radius: 50%;
+
+  opacity: 0.34;
+
+  filter: blur(35px);
+
+  background:
+    radial-gradient(
+      ellipse at center,
+      rgba(40, 232, 255, 0.05),
+      rgba(154, 77, 255, 0.04) 45%,
+      transparent 74%
+    );
+}
+
+#logoVoiceGlow {
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  width: 650px;
+  height: 360px;
+
+  transform:
+    translate(-50%, -50%);
+
+  border-radius: 50%;
+
+  opacity: 0;
+
+  filter: blur(28px);
+
+  background:
+    radial-gradient(
+      ellipse at center,
+      rgba(255, 41, 79, 0.22),
+      rgba(119, 0, 32, 0.10) 42%,
+      transparent 72%
+    );
+
+  transition:
+    opacity 0.10s linear,
+    transform 0.10s linear;
+}
+
+/* =========================================================
+   BUTOANE TIKTOK + LIVE
+========================================================= */
+
+.round-button {
+  position: absolute;
+
+  z-index: 11;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  transform-origin: center center;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(20, 20, 41, 0.97),
+      rgba(3, 4, 12, 0.99) 72%
+    );
+
+  box-shadow:
+    0 15px 38px rgba(0, 0, 0, 0.82),
+    inset 0 0 30px rgba(255, 255, 255, 0.025);
+
+  transition:
+    transform 0.07s linear,
+    filter 0.07s linear;
+}
+
+#tiktokButton {
+  left: 1570px;
+  top: 75px;
+
+  width: 205px;
+  height: 205px;
+}
+
+#liveButton {
+  left: 1603px;
+  top: 300px;
+
+  width: 140px;
+  height: 140px;
+
+  background:
+    radial-gradient(
+      circle,
+      #36000f,
+      #150007 58%,
+      #070004 80%
+    );
+}
+
+.button-ring {
+  position: absolute;
+
+  border-radius: 50%;
+
+  pointer-events: none;
+}
+
+.button-ring-outer {
+  inset: -8px;
+
+  border:
+    4px solid
+    rgba(40, 232, 255, 0.62);
+
+  box-shadow:
+    0 0 14px rgba(40, 232, 255, 0.75),
+    0 0 30px rgba(255, 53, 211, 0.48),
+    0 0 52px rgba(43, 143, 255, 0.28);
+}
+
+.button-ring-inner {
+  inset: 7px;
+
+  border:
+    2px solid
+    rgba(255, 255, 255, 0.16);
+
+  box-shadow:
+    inset 0 0 20px rgba(255, 255, 255, 0.05);
+}
+
+#liveButton .button-ring-outer {
+  border-color:
+    rgba(255, 41, 79, 0.72);
+
+  box-shadow:
+    0 0 15px rgba(255, 41, 79, 0.86),
+    0 0 34px rgba(119, 0, 32, 0.60),
+    0 0 58px rgba(255, 41, 79, 0.24);
+}
+
+#liveButton .button-ring-inner {
+  border-color:
+    rgba(255, 100, 120, 0.22);
+}
+
+.tiktok-symbol {
+  color: #fff;
+
+  font-size: 65px;
+  line-height: 0.84;
+
+  font-weight: 900;
+
+  text-shadow:
+    -5px 0 0 var(--cyan),
+    5px 0 0 var(--pink),
+    0 0 24px rgba(255, 255, 255, 0.78);
+}
+
+.button-label {
+  margin-top: 9px;
+
+  color: #fff;
+
+  font-size: 28px;
+  font-weight: 900;
+}
+
+.live-label {
+  color: #fff;
+
+  font-size: 38px;
+  font-weight: 900;
+
+  text-shadow:
+    0 0 12px var(--red),
+    0 0 32px var(--wine);
+}
+
+.live-dot {
+  width: 13px;
+  height: 13px;
+
+  margin-top: 9px;
+
+  border-radius: 50%;
+
+  background:
+    var(--red);
+
+  box-shadow:
+    0 0 13px var(--red),
+    0 0 28px var(--red);
+}
+
+/* =========================================================
+   CAMERA MAI MARE
+========================================================= */
+
+#cameraFrame {
+  left: 1368px;
+  top: 470px;
+
+  width: 515px;
+  height: 410px;
+
+  border-radius: 30px;
+}
+
+#cameraFrame .frame-neon {
+  border-color:
+    rgba(255, 217, 106, 0.70);
+
+  box-shadow:
+    0 0 13px rgba(255, 217, 106, 0.84),
+    0 0 32px rgba(255, 170, 35, 0.50),
+    0 0 62px rgba(255, 217, 106, 0.25),
+    inset 0 0 22px rgba(255, 255, 255, 0.06);
+}
+
+#cameraFrame .frame-runner {
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      var(--gold-light),
+      transparent
+    );
+
+  box-shadow:
+    0 0 17px var(--gold-light),
+    0 0 30px rgba(255, 217, 106, 0.55);
+}
+
+#cameraFrame .frame-corners span {
+  border-color:
+    rgba(255, 232, 155, 0.66);
+}
+
+.frame-title {
+  position: absolute;
+
+  left: 50%;
+  top: 11px;
+
+  transform:
+    translateX(-50%);
+
+  z-index: 4;
+
+  color:
+    #ffe8a4;
+
+  font-size: 15px;
+  font-weight: 900;
+
+  letter-spacing: 2px;
+
+  text-shadow:
+    0 0 11px rgba(255, 217, 106, 0.72);
+}
+
+/* =========================================================
+   BANNER UNIC JOS
+========================================================= */
+
+#ticker {
+  position: absolute;
+
+  left: 555px;
+  bottom: 22px;
+
+  width: 1328px;
+  height: 138px;
+
+  z-index: 16;
+
+  overflow: hidden;
+
+  border-radius: 29px;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(11, 12, 29, 0.97),
+      rgba(4, 5, 14, 0.99)
+    );
+
+  border:
+    2px solid
+    rgba(255, 255, 255, 0.11);
+
+  box-shadow:
+    0 0 22px rgba(255, 53, 211, 0.18),
+    0 0 40px rgba(40, 232, 255, 0.12),
+    inset 0 0 26px rgba(255, 255, 255, 0.035);
+}
+
+#tickerNeon {
+  position: absolute;
+  inset: -2px;
+
+  padding: 3px;
+
+  border-radius: inherit;
+
+  pointer-events: none;
+
+  background:
+    linear-gradient(
+      90deg,
+      var(--pink),
+      var(--cyan),
+      var(--gold),
+      var(--red),
+      var(--white),
+      var(--pink)
+    );
+
+  background-size:
+    300% 100%;
+
+  animation:
+    ticker-neon-flow 8s linear infinite;
+
+  opacity: 0.80;
+
+  -webkit-mask:
+    linear-gradient(#000 0 0)
+      content-box,
+    linear-gradient(#000 0 0);
+
+  -webkit-mask-composite:
+    xor;
+
+  mask-composite:
+    exclude;
+}
+
+@keyframes ticker-neon-flow {
+  to {
+    background-position:
+      300% 0;
+  }
+}
+
+#tickerViewport {
+  position: absolute;
+  inset: 0;
+
+  overflow: hidden;
+
+  display: flex;
+  align-items: center;
+}
+
+#tickerTrack {
+  position: absolute;
+
+  display: flex;
+  align-items: center;
+
+  min-width:
+    max-content;
+
+  white-space:
+    nowrap;
+
+  font-size: 38px;
+  font-weight: 900;
+
+  letter-spacing: 1px;
+
+  will-change:
+    transform;
+}
+
+#tickerPulse {
+  position: absolute;
+
+  left: 4%;
+  right: 4%;
+  bottom: 12px;
+
+  height: 2px;
+
+  opacity: 0.35;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      var(--cyan),
+      var(--pink),
+      var(--gold),
+      transparent
+    );
+
+  box-shadow:
+    0 0 12px rgba(40, 232, 255, 0.42);
+}
+
+/* =========================================================
+   PANOU CONTROL
+========================================================= */
+
+#controlPanel {
+  position: fixed;
+
+  left: 50%;
+  top: 50%;
+
+  transform:
+    translate(-50%, -50%);
+
+  width:
+    min(820px, 95vw);
+
+  z-index: 100;
+
+  padding: 24px;
+
+  border-radius: 25px;
+
+  color: #fff;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(16, 16, 38, 0.985),
+      rgba(7, 7, 20, 0.995)
+    );
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.17);
+
+  box-shadow:
+    0 28px 90px rgba(0, 0, 0, 0.78),
+    0 0 38px rgba(255, 53, 211, 0.13),
+    inset 0 0 24px rgba(255, 255, 255, 0.025);
+}
+
+.panel-heading {
+  text-align: center;
+
+  margin-bottom: 19px;
+}
+
+.panel-title {
+  color:
+    var(--gold);
+
+  font-size: 27px;
+  font-weight: 900;
+
+  letter-spacing: 1px;
+
+  text-shadow:
+    0 0 16px rgba(255, 217, 106, 0.34);
+}
+
+.panel-subtitle {
+  margin-top: 4px;
+
+  color:
+    rgba(255, 255, 255, 0.55);
+
+  font-size: 11px;
+  font-weight: 700;
+
+  letter-spacing: 2px;
+}
+
+.control-section {
+  margin: 14px 0;
+}
+
+.control-section-title {
+  margin-bottom: 7px;
+
+  color:
+    var(--gold);
+
+  font-size: 12px;
+  font-weight: 900;
+
+  letter-spacing: 1.5px;
+}
+
+.control-row {
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1fr)
+    205px;
+
+  gap: 12px;
+}
+
+select {
+  width: 100%;
+
+  padding:
+    12px 14px;
+
+  color:
+    #fff;
+
+  border-radius:
+    13px;
+
+  border:
+    1px solid
+    rgba(145, 145, 205, 0.44);
+
+  outline:
+    none;
+
+  background:
+    #17172b;
+}
+
+select:focus {
+  border-color:
+    var(--cyan);
+
+  box-shadow:
+    0 0 14px rgba(40, 232, 255, 0.22);
+}
+
+button {
+  padding:
+    12px 16px;
+
+  border-radius:
+    13px;
+
+  font-weight:
+    900;
+
+  transition:
+    transform 0.12s ease,
+    filter 0.12s ease,
+    box-shadow 0.12s ease;
+}
+
+button:hover {
+  transform:
+    translateY(-1px);
+
+  filter:
+    brightness(1.08);
+}
+
+button:active {
+  transform:
+    translateY(1px)
+    scale(0.99);
+}
+
+#activateMusic {
+  color:
+    #101018;
+
+  background:
+    linear-gradient(
+      90deg,
+      var(--pink),
+      var(--gold)
+    );
+
+  box-shadow:
+    0 0 18px rgba(255, 53, 211, 0.18);
+}
+
+#activateVoice {
+  color:
+    #fff;
+
+  background:
+    linear-gradient(
+      90deg,
+      var(--wine),
+      var(--red)
+    );
+
+  box-shadow:
+    0 0 18px rgba(255, 41, 79, 0.18);
+}
+
+/* Slidere */
+
+.slider-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, 1fr);
+
+  gap:
+    17px 20px;
+
+  margin:
+    20px 0;
+}
+
+.slider-grid label {
+  display: flex;
+  flex-direction: column;
+
+  gap: 9px;
+
+  color:
+    #eee;
+
+  font-size:
+    13px;
+
+  font-weight:
+    700;
+}
+
+.slider-grid label span {
+  display:
+    block;
+}
+
+.slider-grid input[type="range"] {
+  width:
+    100%;
+
+  accent-color:
+    var(--pink);
+}
+
+/* Moduri */
+
+.mode-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, 1fr);
+
+  gap:
+    10px;
+
+  margin:
+    18px 0 12px;
+}
+
+.mode-button {
+  color:
+    #fff;
+
+  background:
+    #292941;
+}
+
+#calmMode {
+  background:
+    linear-gradient(
+      90deg,
+      #174e7c,
+      #24b7cf
+    );
+}
+
+#liveMode {
+  background:
+    linear-gradient(
+      90deg,
+      #1c58af,
+      #31d8ff
+    );
+}
+
+#partyMode {
+  background:
+    linear-gradient(
+      90deg,
+      #9f195e,
+      #ff843d
+    );
+}
+
+#legendaryMode {
+  color:
+    #101018;
+
+  background:
+    linear-gradient(
+      90deg,
+      #ffd45c,
+      #ff4fa0,
+      #6be9ff
+    );
+
+  box-shadow:
+    0 0 18px rgba(255, 212, 92, 0.28);
+}
+
+.mode-button.active {
+  outline:
+    2px solid
+    #fff;
+
+  box-shadow:
+    0 0 20px rgba(255, 255, 255, 0.32);
+}
+
+/* Acțiuni */
+
+.action-grid {
+  display: grid;
+
+  grid-template-columns:
+    1fr
+    1fr
+    1.4fr;
+
+  gap:
+    10px;
+
+  margin-top:
+    12px;
+}
+
+#resetControls {
+  color:
+    #fff;
+
+  background:
+    #38384f;
+}
+
+#toggleFullscreen {
+  color:
+    #fff;
+
+  background:
+    linear-gradient(
+      90deg,
+      #214d93,
+      #397ee8
+    );
+}
+
+#hidePanel {
+  color:
+    #fff;
+
+  background:
+    linear-gradient(
+      90deg,
+      #3b245d,
+      #672f82
+    );
+}
+
+/* Status */
+
+#statusArea {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, 1fr);
+
+  gap:
+    9px;
+
+  margin-top:
+    18px;
+}
+
+#statusArea > div {
+  padding:
+    9px 10px;
+
+  border-radius:
+    11px;
+
+  color:
+    rgba(255, 255, 255, 0.84);
+
+  font-size:
+    12px;
+
+  text-align:
+    center;
+
+  background:
+    rgba(255, 255, 255, 0.045);
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.06);
+}
+
+#statusText {
+  margin:
+    15px 0 0;
+
+  color:
+    var(--text-soft);
+
+  font-size:
+    13px;
+
+  line-height:
+    1.5;
+}
+
+.shortcut-help {
+  margin:
+    12px 0 0;
+
+  color:
+    var(--gold);
+
+  text-align:
+    center;
+
+  font-size:
+    12px;
+
+  line-height:
+    1.55;
+}
+
+/* =========================================================
+   NOTIFICĂRI + BLOCARE
+========================================================= */
+
+#shortcutNotice {
+  position: fixed;
+
+  right: 16px;
+  bottom: 16px;
+
+  z-index: 200;
+
+  padding:
+    11px 15px;
+
+  border-radius:
+    12px;
+
+  color:
+    #fff;
+
+  background:
+    rgba(0, 0, 0, 0.76);
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.14);
+
+  box-shadow:
+    0 0 24px rgba(0, 0, 0, 0.56);
+
+  opacity:
+    0;
+
+  transform:
+    translateY(8px);
+
+  transition:
+    opacity 0.24s ease,
+    transform 0.24s ease;
+
+  pointer-events:
+    none;
+}
+
+#shortcutNotice.visible {
+  opacity:
+    1;
+
+  transform:
+    translateY(0);
+}
+
+#lockIndicator {
+  position: fixed;
+
+  left: 50%;
+  top: 18px;
+
+  z-index: 200;
+
+  transform:
+    translateX(-50%);
+
+  padding:
+    8px 14px;
+
+  border-radius:
+    999px;
+
+  color:
+    #fff;
+
+  background:
+    rgba(119, 0, 32, 0.88);
+
+  border:
+    1px solid
+    rgba(255, 100, 120, 0.35);
+
+  box-shadow:
+    0 0 18px rgba(255, 41, 79, 0.40);
+
+  font-size:
+    12px;
+
+  font-weight:
+    900;
+
+  letter-spacing:
+    1px;
+
+  opacity:
+    0;
+
+  transform:
+    translateX(-50%)
+    translateY(-12px);
+
+  transition:
+    opacity 0.22s ease,
+    transform 0.22s ease;
+
+  pointer-events:
+    none;
+}
+
+body[data-locked="true"] #lockIndicator {
+  opacity:
+    1;
+
+  transform:
+    translateX(-50%)
+    translateY(0);
+}
+
+/* =========================================================
+   STĂRI ȘI MODURI
+========================================================= */
+
+body[data-engine-mode="calm"] #stage {
+  filter:
+    saturate(0.88)
+    brightness(0.94);
+}
+
+body[data-engine-mode="party"] #stage {
+  filter:
+    saturate(1.15)
+    brightness(1.03);
+}
+
+body[data-engine-mode="legendary"] #stage {
+  filter:
+    saturate(1.25)
+    brightness(1.07)
+    contrast(1.04);
+}
+
+body[data-engine-mode="legendary"] #ticker {
+  box-shadow:
+    0 0 26px rgba(255, 53, 211, 0.28),
+    0 0 48px rgba(40, 232, 255, 0.18),
+    inset 0 0 30px rgba(255, 255, 255, 0.05);
+}
+
+body[data-engine-mode="legendary"] #soulLogo {
+  filter:
+    drop-shadow(
+      0 18px 34px
+      rgba(0, 0, 0, 0.96)
+    )
+    drop-shadow(
+      0 0 20px
+      rgba(255, 217, 106, 0.33)
+    );
+}
+
+/* =========================================================
+   CALITATE / OPTIMIZARE
+========================================================= */
+
+body[data-quality="balanced"] #stage::before {
+  opacity:
+    0.12;
+}
+
+body[data-quality="performance"] #stage::before {
+  opacity:
+    0.07;
+}
+
+body[data-quality="performance"] #logoAfterglow {
+  display:
+    none;
+}
+
+body[data-quality="performance"] .frame-corners {
+  opacity:
+    0.55;
+}
+
+/* =========================================================
+   UTILITARE
+========================================================= */
+
+.hidden {
+  display:
+    none !important;
+}
+
+.no-transition,
+.no-transition * {
+  transition:
+    none !important;
+}

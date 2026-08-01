@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <meta
+    name="theme-color"
+    content="#030308"
+  >
+
+  <title>Soul Music Engine X — Ultimate</title>
+
+  <link
+    rel="stylesheet"
+    href="style.css"
+  >
+</head>
+
+<body>
+
+  <!--
+    VIEWPORT
+    Adaptează scena fixă 1920 × 1080
+    la fereastra browserului și TikTok LIVE Studio.
+  -->
+  <main id="viewport">
+
+    <!-- SCENĂ NATIVĂ FULL HD -->
+    <section
+      id="stage"
+      aria-label="Soul Music Live Engine"
+    >
+
+      <!-- Fundal cosmic și particule ambientale -->
+      <canvas id="ambientCanvas"></canvas>
+
+      <!-- Orga principală care izvorăște din logo -->
+      <canvas id="visualizerCanvas"></canvas>
+
+      <!-- Neon, bass bursts, raze și efecte reactive -->
+      <canvas id="effectsCanvas"></canvas>
+
+
+      <!--
+        DREPTUNGHIUL PRINCIPAL DIN STÂNGA
+        Obligatoriu de sus până jos.
+      -->
+      <section
+        id="leftFrame"
+        class="reactive-frame"
+        aria-label="Fereastră verticală principală"
+      >
+        <div class="frame-surface"></div>
+
+        <div class="frame-neon"></div>
+
+        <div class="frame-runner"></div>
+
+        <div class="frame-corners">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </section>
+
+
+      <!--
+        LOGO CENTRAL
+        Doar logo-ul original, fără pătrat și fără cerc vizibil.
+      -->
+      <section
+        id="logoArea"
+        aria-label="Logo Soul Music"
+      >
+        <div id="logoAmbientGlow"></div>
+
+        <div id="logoAfterglow"></div>
+
+        <img
+          id="soulLogo"
+          src="assets/logo.png"
+          alt="Soul Music"
+          draggable="false"
+        >
+
+        <div id="logoVoiceGlow"></div>
+      </section>
+
+
+      <!-- TIKTOK -->
+      <section
+        id="tiktokButton"
+        class="round-button reactive-button"
+        aria-label="TikTok"
+      >
+        <div class="button-ring button-ring-outer"></div>
+
+        <div class="button-ring button-ring-inner"></div>
+
+        <div class="tiktok-symbol">
+          ♪
+        </div>
+
+        <div class="button-label">
+          TikTok
+        </div>
+      </section>
+
+
+      <!-- LIVE -->
+      <section
+        id="liveButton"
+        class="round-button reactive-button"
+        aria-label="Live"
+      >
+        <div class="button-ring button-ring-outer"></div>
+
+        <div class="button-ring button-ring-inner"></div>
+
+        <div class="live-label">
+          LIVE
+        </div>
+
+        <div class="live-dot"></div>
+      </section>
+
+
+      <!-- CAMERA MARE -->
+      <section
+        id="cameraFrame"
+        class="reactive-frame"
+        aria-label="Camera live"
+      >
+        <div class="frame-surface"></div>
+
+        <div class="frame-neon"></div>
+
+        <div class="frame-runner"></div>
+
+        <div class="frame-title">
+          CAMERA LIVE
+        </div>
+
+        <div class="frame-corners">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </section>
+
+
+      <!--
+        BANNER UNIC LA BAZĂ
+        Fără casete suplimentare și fără footer separat.
+      -->
+      <section
+        id="ticker"
+        aria-label="Mesaje Soul Music"
+      >
+        <div id="tickerNeon"></div>
+
+        <div id="tickerViewport">
+          <div id="tickerTrack"></div>
+        </div>
+
+        <div id="tickerPulse"></div>
+      </section>
+
+    </section>
+  </main>
+
+
+  <!-- PANOU COMPLET DE CONTROL -->
+  <aside
+    id="controlPanel"
+    aria-label="Control Soul Music Engine X"
+  >
+    <div class="panel-heading">
+
+      <div class="panel-title">
+        SOUL MUSIC ENGINE X
+      </div>
+
+      <div class="panel-subtitle">
+        ULTIMATE AUDIO-REACTIVE CONTROL
+      </div>
+
+    </div>
+
+
+    <!-- MUZICĂ -->
+    <section class="control-section">
+
+      <div class="control-section-title">
+        MUZICĂ
+      </div>
+
+      <div class="control-row">
+
+        <select
+          id="musicDevice"
+          aria-label="Dispozitiv pentru muzică"
+        >
+          <option>
+            Încarc dispozitivele audio...
+          </option>
+        </select>
+
+        <button
+          id="activateMusic"
+          type="button"
+        >
+          Activează muzica
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <!-- MICROFON -->
+    <section class="control-section">
+
+      <div class="control-section-title">
+        MICROFON
+      </div>
+
+      <div class="control-row">
+
+        <select
+          id="voiceDevice"
+          aria-label="Microfon"
+        >
+          <option>
+            Încarc microfoanele...
+          </option>
+        </select>
+
+        <button
+          id="activateVoice"
+          type="button"
+        >
+          Activează microfonul
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <!-- CONTROALE AUDIO -->
+    <section class="slider-grid">
+
+      <label for="musicSensitivity">
+
+        <span>
+          Sensibilitate muzică
+        </span>
+
+        <input
+          id="musicSensitivity"
+          type="range"
+          min="1"
+          max="10"
+          step="0.1"
+          value="4.5"
+        >
+
+      </label>
+
+
+      <label for="voiceSensitivity">
+
+        <span>
+          Sensibilitate voce
+        </span>
+
+        <input
+          id="voiceSensitivity"
+          type="range"
+          min="1"
+          max="12"
+          step="0.1"
+          value="6"
+        >
+
+      </label>
+
+
+      <label for="bassSensitivity">
+
+        <span>
+          Intensitate bass
+        </span>
+
+        <input
+          id="bassSensitivity"
+          type="range"
+          min="0.5"
+          max="4"
+          step="0.1"
+          value="2"
+        >
+
+      </label>
+
+
+      <label for="highSensitivity">
+
+        <span>
+          Intensitate înalte
+        </span>
+
+        <input
+          id="highSensitivity"
+          type="range"
+          min="0.5"
+          max="4"
+          step="0.1"
+          value="1.7"
+        >
+
+      </label>
+
+
+      <label for="neonIntensity">
+
+        <span>
+          Intensitate neon
+        </span>
+
+        <input
+          id="neonIntensity"
+          type="range"
+          min="0.5"
+          max="3"
+          step="0.1"
+          value="1.6"
+        >
+
+      </label>
+
+
+      <label for="particleIntensity">
+
+        <span>
+          Intensitate particule
+        </span>
+
+        <input
+          id="particleIntensity"
+          type="range"
+          min="0"
+          max="3"
+          step="0.1"
+          value="1.3"
+        >
+
+      </label>
+
+    </section>
+
+
+    <!-- TOATE CELE PATRU MODURI -->
+    <section class="mode-grid">
+
+      <button
+        id="calmMode"
+        class="mode-button"
+        data-mode="calm"
+        type="button"
+      >
+        Calm
+      </button>
+
+      <button
+        id="liveMode"
+        class="mode-button active"
+        data-mode="live"
+        type="button"
+      >
+        Live
+      </button>
+
+      <button
+        id="partyMode"
+        class="mode-button"
+        data-mode="party"
+        type="button"
+      >
+        Party
+      </button>
+
+      <button
+        id="legendaryMode"
+        class="mode-button"
+        data-mode="legendary"
+        type="button"
+      >
+        Legendary
+      </button>
+
+    </section>
+
+
+    <!-- ACȚIUNI -->
+    <section class="action-grid">
+
+      <button
+        id="resetControls"
+        type="button"
+      >
+        Reset
+      </button>
+
+      <button
+        id="toggleFullscreen"
+        type="button"
+      >
+        Fullscreen
+      </button>
+
+      <button
+        id="hidePanel"
+        type="button"
+      >
+        Ascunde panoul
+      </button>
+
+    </section>
+
+
+    <!-- STATUS -->
+    <div id="statusArea">
+
+      <div id="musicStatus">
+        Muzică: inactivă
+      </div>
+
+      <div id="voiceStatus">
+        Microfon: inactiv
+      </div>
+
+      <div id="performanceStatus">
+        Engine: pregătit
+      </div>
+
+    </div>
+
+
+    <p id="statusText">
+      Selectează CABLE Output pentru muzică și microfonul real pentru voce.
+    </p>
+
+    <p class="shortcut-help">
+      1 Calm • 2 Live • 3 Party • 4 Legendary
+      <br>
+      C Panou • F Fullscreen • L Blocare • R Reset
+    </p>
+
+  </aside>
+
+
+  <!-- NOTIFICĂRI SCURTE -->
+  <div
+    id="shortcutNotice"
+    role="status"
+    aria-live="polite"
+  ></div>
+
+
+  <!-- INDICATOR BLOCARE -->
+  <div id="lockIndicator">
+    COMENZI BLOCATE
+  </div>
+
+
+  <!-- MODULELE ENGINE X -->
+  <script src="audio.js"></script>
+
+  <script src="visualizer.js"></script>
+
+  <script src="effects.js"></script>
+
+  <script src="banner.js"></script>
+
+  <script src="engine.js"></script>
+
+</body>
+</html>
