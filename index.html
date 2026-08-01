@@ -507,6 +507,44 @@
     </section>
 
 
+    <!-- MOMENTE SOUL MUSIC DECLANȘATE MANUAL -->
+    <section class="moment-section">
+
+      <div class="control-section-title">
+        MOMENTE SOUL MUSIC
+      </div>
+
+      <div class="moment-grid">
+
+        <button type="button" data-soul-moment="welcome">
+          <span>Bun venit</span><small>Shift+1</small>
+        </button>
+
+        <button type="button" data-soul-moment="follow">
+          <span>Follow</span><small>Shift+2</small>
+        </button>
+
+        <button type="button" data-soul-moment="thank-you">
+          <span>Mulțumesc</span><small>Shift+3</small>
+        </button>
+
+        <button type="button" data-soul-moment="original">
+          <span>Original</span><small>Shift+4</small>
+        </button>
+
+        <button type="button" data-soul-moment="bass-drop">
+          <span>Bass Drop</span><small>Shift+5</small>
+        </button>
+
+        <button type="button" data-soul-moment="legendary">
+          <span>Legendary</span><small>Shift+6</small>
+        </button>
+
+      </div>
+
+    </section>
+
+
     <!-- ACȚIUNI -->
     <section class="action-grid">
 
@@ -558,6 +596,13 @@
       </div>
 
       <div
+        id="momentStatus"
+        data-state="auto"
+      >
+        Moment: AUTO
+      </div>
+
+      <div
         id="liveReadinessStatus"
         data-state="checking"
       >
@@ -573,6 +618,8 @@
 
     <p class="shortcut-help">
       1 Calm • 2 Live • 3 Party • 4 Legendary
+      <br>
+      Shift+1…6 Momente Soul Music
       <br>
       C Panou • F Fullscreen • L Blocare • R Reset
     </p>
@@ -622,6 +669,8 @@
   <script src="smart-banner.js"></script>
 
   <script src="now-playing.js"></script>
+
+  <script src="moments.js"></script>
 
   <script src="live-check.js"></script>
 
