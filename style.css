@@ -183,6 +183,7 @@ img {
 
 #ambientCanvas,
 #visualizerCanvas,
+#logoScenesCanvas,
 #effectsCanvas {
   position: absolute;
   inset: 0;
@@ -199,6 +200,10 @@ img {
 
 #visualizerCanvas {
   z-index: 7;
+}
+
+#logoScenesCanvas {
+  z-index: 9;
 }
 
 #effectsCanvas {

@@ -2,6 +2,21 @@
 
 Motor vizual audio-reactiv Full HD pentru TikTok LIVE Studio.
 
+## Design V2 — Pasul 2: patru scene pentru orga logo-ului
+
+`logo-scenes.js` desenează noua orgă pe un strat Full HD dedicat, controlat
+direct de Scene Director:
+
+- `Soul Flow` — coloane fine aurii și cyan, fluide și simetrice;
+- `Bass Crown` — o coroană de bass ridicată deasupra aripilor;
+- `Legendary Wings` — raze ample, simetrice, rezervate momentelor puternice;
+- `Red Voice` — undă roșie distinctă pentru microfon.
+
+Scena `idle` păstrează doar o respirație aurie discretă. Trecerea dintre scene
+este graduală, densitatea se adaptează automat la bugetul de performanță, iar
+desenul vechii orgi este dezactivat exclusiv cât timp noul renderer funcționează,
+fără a opri analiza audio sau reacția logo-ului.
+
 ## Design V2 — Pasul 1: Scene Director
 
 `scene-director.js` este regizorul automat care pregătește noul design fără

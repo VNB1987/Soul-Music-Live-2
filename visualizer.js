@@ -23,6 +23,7 @@ const SoulVisualizer = {
   voiceEnergy: 0,
 
   paused: false,
+  sceneRendererExclusive: false,
 
   elements: {},
 
@@ -216,10 +217,17 @@ const SoulVisualizer = {
           : 0.10
       );
 
-    this.detectBeat(
-      music,
-      engine
-    );
+    if (!this.sceneRendererExclusive) {
+      this.detectBeat(
+        music,
+        engine
+      );
+    } else {
+      this.previousBass =
+        Number(music.bass || 0);
+      this.beatEnergy = 0;
+      this.beatParticles = [];
+    }
 
     this.afterglowEnergy =
       Math.max(
@@ -234,6 +242,18 @@ const SoulVisualizer = {
       this.width,
       this.height
     );
+
+    if (this.sceneRendererExclusive) {
+      this.animateLogo(
+        time,
+        music,
+        this.voiceEnergy,
+        engine
+      );
+
+      this.beatEnergy *= 0.86;
+      return;
+    }
 
     this.drawAmbientHalo(
       time,
@@ -297,6 +317,25 @@ const SoulVisualizer = {
 
     this.beatEnergy *=
       0.86;
+  },
+
+  setSceneRendererExclusive(enabled = true) {
+    this.sceneRendererExclusive =
+      Boolean(enabled);
+
+    if (
+      this.sceneRendererExclusive &&
+      this.context
+    ) {
+      this.context.clearRect(
+        0,
+        0,
+        this.width,
+        this.height
+      );
+    }
+
+    return this.sceneRendererExclusive;
   },
 
   detectBeat(

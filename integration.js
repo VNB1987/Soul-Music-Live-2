@@ -9,7 +9,7 @@
 */
 
 const SoulIntegration = {
-  version: "1.0.0-design-v2-step1",
+  version: "1.1.0-design-v2-step2",
 
   ready: false,
   starting: false,
@@ -21,6 +21,7 @@ const SoulIntegration = {
   cameraLayerIds: [
     "ambientCanvas",
     "visualizerCanvas",
+    "logoScenesCanvas",
     "leftFrame",
     "logoGroup",
     "tiktokButton",
@@ -52,6 +53,7 @@ const SoulIntegration = {
       this.initializeParticles();
       this.initializeSignature();
       this.initializeSceneDirector();
+      this.initializeLogoScenes();
       this.initializeNowPlaying();
       this.initializeLiveCheck();
       this.syncPerformanceBudget();
@@ -112,6 +114,9 @@ const SoulIntegration = {
       sceneDirector:
         overrides.sceneDirector ||
         runtime?.SoulSceneDirector,
+      logoScenes:
+        overrides.logoScenes ||
+        runtime?.SoulLogoScenes,
       nowPlaying:
         overrides.nowPlaying ||
         runtime?.SoulNowPlaying,
@@ -136,6 +141,7 @@ const SoulIntegration = {
       "performance",
       "signature",
       "sceneDirector",
+      "logoScenes",
       "nowPlaying",
       "liveCheck"
     ];
@@ -271,6 +277,40 @@ const SoulIntegration = {
           this.modules.audio,
         performanceEngine:
           this.modules.performance,
+        autoStart: true
+      })
+    );
+  },
+
+  initializeLogoScenes() {
+    const module =
+      this.modules.logoScenes;
+
+    if (!module?.init) {
+      return false;
+    }
+
+    return this.safeInit(
+      "logoScenes",
+      () => module.init({
+        canvas:
+          this.getRuntime()
+            ?.document
+            ?.getElementById?.(
+              "logoScenesCanvas"
+            ),
+        logoElement:
+          this.modules.sceneGraph
+            ?.getNode?.("logoGroup")
+            ?.element,
+        director:
+          this.modules.sceneDirector,
+        audio:
+          this.modules.audio,
+        performanceEngine:
+          this.modules.performance,
+        legacyVisualizer:
+          this.modules.visualizer,
         autoStart: true
       })
     );

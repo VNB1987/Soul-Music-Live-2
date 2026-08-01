@@ -65,6 +65,16 @@ const SoulSceneGraph = {
       tags: ["canvas", "audio", "visualizer"]
     },
     {
+      id: "logoScenesCanvas",
+      domId: "logoScenesCanvas",
+      label: "Scene orgă logo",
+      type: "canvas",
+      parentId: "backgroundGroup",
+      layer: 9,
+      reactive: true,
+      tags: ["canvas", "audio", "logo", "scene"]
+    },
+    {
       id: "contentGroup",
       label: "Conținut principal",
       type: "group",
