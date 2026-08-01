@@ -9,7 +9,7 @@
 */
 
 const SoulIntegration = {
-  version: "1.5.0-design-v2-step6",
+  version: "1.6.0-design-v2-step7",
 
   ready: false,
   starting: false,
@@ -57,6 +57,7 @@ const SoulIntegration = {
       this.initializeSmartBanner();
       this.initializeNowPlaying();
       this.initializeMoments();
+      this.initializeMemory();
       this.initializeLiveCheck();
       this.syncPerformanceBudget();
       this.applyInitialCameraFrame();
@@ -131,6 +132,9 @@ const SoulIntegration = {
       moments:
         overrides.moments ||
         runtime?.SoulMoments,
+      memory:
+        overrides.memory ||
+        runtime?.SoulMemory,
       liveCheck:
         overrides.liveCheck ||
         runtime?.SoulLiveCheck
@@ -157,6 +161,7 @@ const SoulIntegration = {
       "smartBanner",
       "nowPlaying",
       "moments",
+      "memory",
       "liveCheck"
     ];
 
@@ -462,6 +467,26 @@ const SoulIntegration = {
     );
   },
 
+  initializeMemory() {
+    const module =
+      this.modules.memory;
+
+    if (!module?.init) {
+      return false;
+    }
+
+    return this.safeInit(
+      "memory",
+      () => module.init({
+        engine:
+          this.modules.engine,
+        audio:
+          this.modules.audio,
+        autoStart: true
+      })
+    );
+  },
+
   initializeLiveCheck() {
     const module =
       this.modules.liveCheck;
@@ -484,6 +509,8 @@ const SoulIntegration = {
           this.modules.nowPlaying,
         moments:
           this.modules.moments,
+        memory:
+          this.modules.memory,
         autoRun: true,
         applyCalibration: true
       })

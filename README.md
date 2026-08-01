@@ -2,6 +2,26 @@
 
 Motor vizual audio-reactiv Full HD pentru TikTok LIVE Studio.
 
+## Design V2 — Pasul 7: memorie și autostart sigur
+
+`memory.js` păstrează local preferințele operatorului între două porniri ale
+serverului Soul Music:
+
+- modul Calm, Live, Party sau Legendary;
+- cele șase valori pentru sensibilitate, bass, înalte, neon și particule;
+- dispozitivele alese separat pentru muzică și microfon;
+- starea de autostart a fiecărui canal audio.
+
+Autostartul nu alege niciodată un dispozitiv la întâmplare. Canalul pornește
+numai dacă fusese activ la ultima utilizare și dispozitivul salvat este găsit
+după ID sau după aceeași denumire. Dacă lipsește, engine-ul rămâne oprit pe acel
+canal și afișează avertizarea în panou. Preferințele invalide sau provenite din
+altă versiune sunt respinse și înlocuite cu presetul Live sigur.
+
+Comutatorul `Autostart audio` oprește numai pornirile viitoare, fără să închidă
+sunetul curent. `Șterge memoria` elimină selecțiile și setările salvate, dar nu
+oprește transmisia aflată deja în desfășurare.
+
 ## Design V2 — Pasul 5: Now Playing generos
 
 Now Playing este fixat sus, între cadrul vertical și zona TikTok, într-o bandă

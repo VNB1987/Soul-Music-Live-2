@@ -311,7 +311,8 @@ const SoulLiveCheck = {
       ["Frame Neon", runtime?.SoulFrameNeon],
       ["Smart Banner", runtime?.SoulSmartBanner],
       ["Now Playing", runtime?.SoulNowPlaying],
-      ["Momente Soul", runtime?.SoulMoments]
+      ["Momente Soul", runtime?.SoulMoments],
+      ["Memorie", runtime?.SoulMemory]
     ];
 
     const stopped = [];
@@ -339,7 +340,7 @@ const SoulLiveCheck = {
       critical: true,
       detail:
         stopped.length === 0
-          ? "10 motoare adaptive active"
+          ? "11 motoare adaptive active"
           : `Motoare oprite: ${stopped.join(", ")}`
     });
   },
