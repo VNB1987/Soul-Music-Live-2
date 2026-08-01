@@ -9,7 +9,7 @@
 */
 
 const SoulIntegration = {
-  version: "1.2.0-design-v2-step3",
+  version: "1.3.0-design-v2-step4",
 
   ready: false,
   starting: false,
@@ -55,6 +55,7 @@ const SoulIntegration = {
       this.initializeSceneDirector();
       this.initializeLogoScenes();
       this.initializeFrameNeon();
+      this.initializeSmartBanner();
       this.initializeNowPlaying();
       this.initializeLiveCheck();
       this.syncPerformanceBudget();
@@ -121,6 +122,9 @@ const SoulIntegration = {
       frameNeon:
         overrides.frameNeon ||
         runtime?.SoulFrameNeon,
+      smartBanner:
+        overrides.smartBanner ||
+        runtime?.SoulSmartBanner,
       nowPlaying:
         overrides.nowPlaying ||
         runtime?.SoulNowPlaying,
@@ -147,6 +151,7 @@ const SoulIntegration = {
       "sceneDirector",
       "logoScenes",
       "frameNeon",
+      "smartBanner",
       "nowPlaying",
       "liveCheck"
     ];
@@ -350,6 +355,36 @@ const SoulIntegration = {
           this.modules.performance,
         legacyEffects:
           this.modules.effects,
+        autoStart: true
+      })
+    );
+  },
+
+  initializeSmartBanner() {
+    const module =
+      this.modules.smartBanner;
+
+    if (!module?.init) {
+      return false;
+    }
+
+    return this.safeInit(
+      "smartBanner",
+      () => module.init({
+        ticker:
+          this.modules.sceneGraph
+            ?.getNode?.("ticker")
+            ?.element,
+        leftFrame:
+          this.modules.sceneGraph
+            ?.getNode?.("leftFrame")
+            ?.element,
+        director:
+          this.modules.sceneDirector,
+        performanceEngine:
+          this.modules.performance,
+        legacyBanner:
+          this.modules.banner,
         autoStart: true
       })
     );

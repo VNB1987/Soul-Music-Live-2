@@ -10,6 +10,8 @@ const SoulBanner = {
   contentWidth: 0,
   lastTime: 0,
   paused: false,
+  running: false,
+  smartExclusive: false,
 
   messages: [
     {
@@ -55,6 +57,7 @@ const SoulBanner = {
   ],
 
   init() {
+    this.running = true;
     this.track =
       document.getElementById(
         "tickerTrack"
@@ -210,7 +213,8 @@ const SoulBanner = {
 
     if (
       this.paused ||
-      !this.track
+      !this.track ||
+      this.smartExclusive
     ) {
       return;
     }
@@ -695,6 +699,31 @@ const SoulBanner = {
         }
       }
     );
+  },
+
+  setSmartExclusive(enabled = true) {
+    this.smartExclusive =
+      Boolean(enabled);
+    this.lastTime = 0;
+
+    if (this.track?.style) {
+      this.track.style.transform =
+        "translate3d(0, 0, 0)";
+    }
+
+    return this.smartExclusive;
+  },
+
+  getState() {
+    return {
+      running: this.running,
+      paused: this.paused,
+      smartExclusive:
+        this.smartExclusive,
+      messageCount:
+        this.messages.length,
+      position: this.position
+    };
   }
 };
 

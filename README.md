@@ -2,6 +2,22 @@
 
 Motor vizual audio-reactiv Full HD pentru TikTok LIVE Studio.
 
+## Design V2 — Pasul 4: banner inteligent
+
+`smart-banner.js` înlocuiește rularea continuă greu de citit cu mesaje
+focalizate: intrare, timp generos de lectură și ieșire lină.
+
+- 12 propoziții Soul Music, fiecare cu paletă și mișcare proprie;
+- text dimensionat automat între 38 și 52 px pentru a rămâne complet vizibil;
+- bannerul începe la 560 px, după cadrul stâng, fără nicio suprapunere;
+- scena microfonului adaugă accent roșu fără să elimine culoarea mesajului;
+- Soul Flow, Bass Crown și Legendary schimbă controlat viteza luminii;
+- profilurile de performanță reduc blurul, dar păstrează textul lizibil;
+- API manual pentru mesajul următor, anterior sau alegerea directă.
+
+Bannerul vechi rămâne disponibil ca rezervă, dar nu mai poate suprascrie
+noul motor cât timp acesta este activ.
+
 ## Design V2 — Pasul 3: neon inteligent pentru cadre
 
 `frame-neon.js` preia exclusiv cele două rame principale:
