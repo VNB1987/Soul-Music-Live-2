@@ -9,7 +9,7 @@
 */
 
 const SoulIntegration = {
-  version: "1.3.0-design-v2-step4",
+  version: "1.4.0-design-v2-step5",
 
   ready: false,
   starting: false,
@@ -28,8 +28,7 @@ const SoulIntegration = {
     "liveButton",
     "cameraFrame",
     "effectsCanvas",
-    "ticker",
-    "nowPlaying"
+    "ticker"
   ],
 
   init(options = {}) {
@@ -417,6 +416,11 @@ const SoulIntegration = {
           "now-playing.txt",
         position:
           "top-center",
+        compactEnabled: false,
+        sceneDirector:
+          this.modules.sceneDirector,
+        performanceEngine:
+          this.modules.performance,
         autoStart: true
       })
     );
