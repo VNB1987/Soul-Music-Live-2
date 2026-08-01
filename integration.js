@@ -1,7 +1,7 @@
 "use strict";
 
 /*
-  SOUL MUSIC LIVE — INTEGRARE FINALĂ — ETAPA 7
+  SOUL MUSIC LIVE — INTEGRARE DESIGN V2 — PASUL 1
 
   Coordonator unic pentru toate motoarele construite în Etapele 0–6.
   Păstrează modulele independente, stabilește ordinea de pornire și
@@ -9,7 +9,7 @@
 */
 
 const SoulIntegration = {
-  version: "0.7.0-stage7",
+  version: "1.0.0-design-v2-step1",
 
   ready: false,
   starting: false,
@@ -51,6 +51,7 @@ const SoulIntegration = {
       this.initializeCamera();
       this.initializeParticles();
       this.initializeSignature();
+      this.initializeSceneDirector();
       this.initializeNowPlaying();
       this.initializeLiveCheck();
       this.syncPerformanceBudget();
@@ -108,6 +109,9 @@ const SoulIntegration = {
       signature:
         overrides.signature ||
         runtime?.SoulSignature,
+      sceneDirector:
+        overrides.sceneDirector ||
+        runtime?.SoulSceneDirector,
       nowPlaying:
         overrides.nowPlaying ||
         runtime?.SoulNowPlaying,
@@ -131,6 +135,7 @@ const SoulIntegration = {
       "particles",
       "performance",
       "signature",
+      "sceneDirector",
       "nowPlaying",
       "liveCheck"
     ];
@@ -242,6 +247,30 @@ const SoulIntegration = {
         mode:
           this.modules.engine
             ?.mode || "live",
+        autoStart: true
+      })
+    );
+  },
+
+  initializeSceneDirector() {
+    const module =
+      this.modules.sceneDirector;
+
+    if (!module?.init) {
+      return false;
+    }
+
+    return this.safeInit(
+      "sceneDirector",
+      () => module.init({
+        stage:
+          this.modules.sceneGraph
+            ?.getNode?.("stage")
+            ?.element,
+        audio:
+          this.modules.audio,
+        performanceEngine:
+          this.modules.performance,
         autoStart: true
       })
     );
