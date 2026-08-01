@@ -93,6 +93,76 @@
       </section>
 
 
+      <!-- TITLUL MELODIEI CURENTE -->
+      <section
+        id="nowPlaying"
+        data-state="hidden"
+        data-position="top-center"
+        aria-label="Melodia redată acum"
+        aria-live="polite"
+        hidden
+      >
+        <div class="now-playing-shell">
+          <div class="now-playing-logo-wrap">
+            <img
+              class="now-playing-logo"
+              data-now-playing-logo
+              src="assets/logo.png"
+              alt="Soul Music"
+              draggable="false"
+            >
+          </div>
+
+          <div class="now-playing-copy">
+            <div class="now-playing-heading">
+              <span data-now-playing-eyebrow>
+                NOW PLAYING
+              </span>
+
+              <span class="now-playing-divider">
+                •
+              </span>
+
+              <span data-now-playing-label>
+                ACUM CÂNTĂ
+              </span>
+            </div>
+
+            <div
+              class="now-playing-title"
+              data-now-playing-title
+            ></div>
+
+            <div class="now-playing-meta">
+              <span data-now-playing-artist></span>
+
+              <span
+                class="now-playing-source"
+                data-now-playing-source
+              >
+                SOUL MUSIC
+              </span>
+            </div>
+
+            <div
+              class="now-playing-subtitle"
+              data-now-playing-subtitle
+            >
+              Made by Soul Music 🎶
+            </div>
+          </div>
+
+          <div
+            class="now-playing-source-icon"
+            data-now-playing-source-icon
+            aria-hidden="true"
+          >
+            ♪
+          </div>
+        </div>
+      </section>
+
+
       <!-- TIKTOK -->
       <section
         id="tiktokButton"
@@ -493,7 +563,19 @@
 
   <script src="banner.js"></script>
 
+  <script src="camera.js"></script>
+
+  <script src="particles.js"></script>
+
+  <script src="performance.js"></script>
+
+  <script src="signature.js"></script>
+
+  <script src="now-playing.js"></script>
+
   <script src="engine.js"></script>
+
+  <script src="integration.js"></script>
 
 </body>
 </html>

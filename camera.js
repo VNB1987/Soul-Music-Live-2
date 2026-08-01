@@ -87,7 +87,8 @@ const SoulCamera = {
     effectsGroup: 0.90,
     effectsCanvas: 1,
     hudGroup: 0.32,
-    ticker: 0.36
+    ticker: 0.36,
+    nowPlaying: 0.40
   },
 
   frame: {
@@ -377,6 +378,19 @@ const SoulCamera = {
       this.presets[this.mode] ||
       this.presets.live;
 
+    const cameraBudget =
+      this.clamp(
+        this.getRuntime()
+          ?.SoulPerformance
+          ?.getState?.()
+          ?.budget
+          ?.cameraMultiplier ||
+        engine.qualityMultiplier ||
+        1,
+        0.40,
+        1
+      );
+
     const energy =
       this.getAudioEnergy(audio);
 
@@ -411,35 +425,43 @@ const SoulCamera = {
       preset.audioInfluence;
 
     const x =
-      slowWave *
-      preset.driftX +
-      secondaryWave *
-      preset.driftX *
-      0.28;
+      (
+        slowWave *
+        preset.driftX +
+        secondaryWave *
+        preset.driftX *
+        0.28
+      ) *
+      cameraBudget;
 
     const y =
-      verticalWave *
-      preset.driftY +
-      Math.sin(
-        phase * 0.27 +
-        2.1
+      (
+        verticalWave *
+        preset.driftY +
+        Math.sin(
+          phase * 0.27 +
+          2.1
+        ) *
+        preset.driftY *
+        0.22
       ) *
-      preset.driftY *
-      0.22;
+      cameraBudget;
 
     const zoom =
       1 +
       breathing *
       preset.zoom +
       audioMotion *
-      0.006;
+      0.006 *
+      cameraBudget;
 
     const roll =
       Math.sin(
         phase * 0.53 -
         1.25
       ) *
-      preset.roll;
+      preset.roll *
+      cameraBudget;
 
     this.frame = {
       time,
