@@ -1518,6 +1518,11 @@ body[data-quality="performance"] .frame-corners {
     none !important;
 }
 
+.scene-node-hidden {
+  visibility:
+    hidden !important;
+}
+
 .no-transition,
 .no-transition * {
   transition:
