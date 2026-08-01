@@ -260,14 +260,20 @@ const SoulSceneDirector = {
 
     this.updateMetrics(sample);
 
+    const automaticDecision =
+      this.chooseScene(safeTime);
+
     const decision =
-      this.manualScene
-        ? {
-            scene: this.manualScene,
-            reason: "manual",
-            immediate: true
-          }
-        : this.chooseScene(safeTime);
+      automaticDecision.scene ===
+        "red-voice"
+        ? automaticDecision
+        : this.manualScene
+          ? {
+              scene: this.manualScene,
+              reason: "manual",
+              immediate: true
+            }
+          : automaticDecision;
 
     this.processDecision(
       decision,
