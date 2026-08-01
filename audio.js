@@ -231,6 +231,18 @@ const SoulAudio = {
       this.setStatus(
         "Dispozitive încărcate. Selectează CABLE Output pentru muzică și microfonul real pentru voce."
       );
+
+      window.dispatchEvent(
+        new CustomEvent(
+          "soulmusic:audiodevicesloaded",
+          {
+            detail: {
+              count:
+                audioInputs.length
+            }
+          }
+        )
+      );
     } catch (error) {
       console.error(
         "Audio device error:",
