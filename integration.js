@@ -52,6 +52,7 @@ const SoulIntegration = {
       this.initializeParticles();
       this.initializeSignature();
       this.initializeNowPlaying();
+      this.initializeLiveCheck();
       this.syncPerformanceBudget();
       this.applyInitialCameraFrame();
 
@@ -109,7 +110,10 @@ const SoulIntegration = {
         runtime?.SoulSignature,
       nowPlaying:
         overrides.nowPlaying ||
-        runtime?.SoulNowPlaying
+        runtime?.SoulNowPlaying,
+      liveCheck:
+        overrides.liveCheck ||
+        runtime?.SoulLiveCheck
     };
 
     return this.modules;
@@ -127,7 +131,8 @@ const SoulIntegration = {
       "particles",
       "performance",
       "signature",
-      "nowPlaying"
+      "nowPlaying",
+      "liveCheck"
     ];
 
     for (
@@ -270,6 +275,32 @@ const SoulIntegration = {
         position:
           "top-center",
         autoStart: true
+      })
+    );
+  },
+
+  initializeLiveCheck() {
+    const module =
+      this.modules.liveCheck;
+
+    if (!module?.init) {
+      return false;
+    }
+
+    return this.safeInit(
+      "liveCheck",
+      () => module.init({
+        integration: this,
+        engine:
+          this.modules.engine,
+        audio:
+          this.modules.audio,
+        performanceEngine:
+          this.modules.performance,
+        nowPlaying:
+          this.modules.nowPlaying,
+        autoRun: true,
+        applyCalibration: true
       })
     );
   },

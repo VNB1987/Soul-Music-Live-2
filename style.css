@@ -964,6 +964,39 @@ body[data-quality="performance"]
   display: none;
 }
 
+#liveReadinessStatus {
+  margin-top: 7px;
+  padding-top: 7px;
+
+  border-top:
+    1px solid
+    rgba(255, 255, 255, 0.08);
+
+  color:
+    rgba(255, 255, 255, 0.72);
+
+  font-weight: 900;
+  letter-spacing: 0.5px;
+}
+
+#liveReadinessStatus[data-state="ready"] {
+  color: var(--green);
+  text-shadow:
+    0 0 12px
+    rgba(76, 255, 143, 0.44);
+}
+
+#liveReadinessStatus[data-state="warning"] {
+  color: var(--gold);
+}
+
+#liveReadinessStatus[data-state="not-ready"] {
+  color: var(--red);
+  text-shadow:
+    0 0 12px
+    rgba(255, 41, 79, 0.42);
+}
+
 /* =========================================================
    BUTOANE TIKTOK + LIVE
 ========================================================= */
