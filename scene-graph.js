@@ -197,6 +197,21 @@ const SoulSceneGraph = {
       layer: 16,
       reactive: true,
       tags: ["banner", "ticker", "text"]
+    },
+    {
+      id: "nowPlaying",
+      domId: "nowPlaying",
+      label: "Melodia redată acum",
+      type: "overlay",
+      parentId: "hudGroup",
+      layer: 17,
+      reactive: true,
+      tags: [
+        "overlay",
+        "now-playing",
+        "music",
+        "brand"
+      ]
     }
   ],
 
