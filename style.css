@@ -2069,6 +2069,147 @@ body[data-quality="performance"]
     drop-shadow(0 0 15px rgba(255, 205, 83, 0.48));
 }
 
+/* Memorie și autostart */
+
+.memory-section {
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1fr)
+    minmax(210px, 0.9fr)
+    150px;
+
+  align-items: center;
+
+  gap:
+    12px;
+
+  margin:
+    14px 0;
+
+  padding:
+    12px 13px;
+
+  border-radius:
+    16px;
+
+  background:
+    linear-gradient(
+      110deg,
+      rgba(44, 214, 255, 0.065),
+      rgba(255, 215, 101, 0.065)
+    );
+
+  border:
+    1px solid
+    rgba(93, 225, 255, 0.16);
+}
+
+.memory-copy
+  .control-section-title {
+  margin-bottom:
+    4px;
+}
+
+#memoryStatus {
+  color:
+    rgba(255, 255, 255, 0.68);
+
+  font-size:
+    11px;
+
+  font-weight:
+    800;
+}
+
+#memoryStatus[data-state="saved"],
+#memoryStatus[data-state="ready"] {
+  color:
+    #7cefc6;
+}
+
+#memoryStatus[data-state="active"] {
+  color:
+    #ffe392;
+
+  text-shadow:
+    0 0 10px rgba(255, 213, 96, 0.34);
+}
+
+#memoryStatus[data-state="warning"] {
+  color:
+    #ffb463;
+}
+
+#memoryStatus[data-state="cleared"] {
+  color:
+    rgba(255, 255, 255, 0.54);
+}
+
+.memory-toggle {
+  display: flex;
+  align-items: center;
+
+  gap:
+    10px;
+
+  cursor:
+    pointer;
+}
+
+.memory-toggle input {
+  width:
+    38px;
+
+  height:
+    21px;
+
+  accent-color:
+    #50e1bf;
+}
+
+.memory-toggle span {
+  color:
+    rgba(255, 255, 255, 0.88);
+
+  font-size:
+    12px;
+
+  font-weight:
+    900;
+}
+
+.memory-toggle small {
+  display: block;
+
+  margin-top:
+    2px;
+
+  color:
+    rgba(255, 255, 255, 0.45);
+
+  font-size:
+    9px;
+
+  font-weight:
+    700;
+}
+
+#clearEngineMemory {
+  padding:
+    10px 12px;
+
+  color:
+    rgba(255, 255, 255, 0.78);
+
+  background:
+    rgba(55, 54, 76, 0.86);
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.10);
+}
+
 /* Acțiuni */
 
 .action-grid {
