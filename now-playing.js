@@ -11,7 +11,7 @@
 */
 
 const SoulNowPlaying = {
-  version: "0.6.0-stage6",
+  version: "1.0.0-design-v2-step5",
 
   bridgeUrl: "now-playing.txt",
   pollInterval: 1500,
@@ -32,9 +32,20 @@ const SoulNowPlaying = {
   ],
 
   timings: {
-    revealDuration: 6500,
+    revealDuration: 12000,
     transitionOut: 420,
     minimumVisible: 1200
+  },
+
+  compactEnabled: false,
+
+  layout: {
+    left: 565,
+    top: 24,
+    width: 900,
+    minHeight: 132,
+    gapAfterLeftFrame: 23,
+    gapBeforeTikTok: 105
   },
 
   running: false,
@@ -71,6 +82,9 @@ const SoulNowPlaying = {
     voiceEnergy: 0,
     pulse: 0
   },
+
+  sceneDirector: null,
+  performanceEngine: null,
 
   sources: {
     bridge: {
@@ -151,6 +165,23 @@ const SoulNowPlaying = {
       };
     }
 
+    if (
+      typeof options.compactEnabled ===
+        "boolean"
+    ) {
+      this.compactEnabled =
+        options.compactEnabled;
+    }
+
+    this.sceneDirector =
+      options.sceneDirector ||
+      this.getRuntime()
+        ?.SoulSceneDirector || null;
+    this.performanceEngine =
+      options.performanceEngine ||
+      this.getRuntime()
+        ?.SoulPerformance || null;
+
     this.loadCorrections();
 
     if (options.element) {
@@ -163,6 +194,7 @@ const SoulNowPlaying = {
 
     this.bindEvents();
     this.reset(false);
+    this.applyDesignLayout();
 
     if (
       options.autoStart !== false
@@ -529,6 +561,10 @@ const SoulNowPlaying = {
       "compactTimerId"
     );
 
+    if (!this.compactEnabled) {
+      return false;
+    }
+
     this.compactTimerId =
       this.setTimeout(
         () => {
@@ -556,6 +592,8 @@ const SoulNowPlaying = {
         this.timings
           .revealDuration
       );
+
+    return true;
   },
 
   hideNow(
@@ -1016,6 +1054,10 @@ const SoulNowPlaying = {
       this.current?.title || ""
     );
 
+    this.applyTitleFit(
+      this.current?.title || ""
+    );
+
     this.setText(
       this.elements.artist,
       this.current?.artist || ""
@@ -1059,6 +1101,8 @@ const SoulNowPlaying = {
       this.overlay.dataset.source =
         this.current?.source ||
         "none";
+      this.overlay.dataset.design =
+        "v2-step5";
     }
 
     this.overlay.hidden =
@@ -1097,10 +1141,15 @@ const SoulNowPlaying = {
       this.getRuntime()?.SoulAudio
         ?.getState?.() || {};
 
-    const signature =
-      this.getRuntime()
-        ?.SoulSignature
-        ?.getFrameState?.() || {};
+    const sceneState =
+      this.sceneDirector
+        ?.getState?.() || {};
+    const scene =
+      sceneState.currentScene ||
+      "idle";
+    const budget =
+      this.performanceEngine
+        ?.getBudget?.() || {};
 
     const music =
       audio.music || {};
@@ -1157,18 +1206,26 @@ const SoulNowPlaying = {
         time * 0.0024
       ) * 0.5;
 
-    if (voiceEnergy > 0.04) {
+    if (
+      scene === "red-voice" ||
+      voiceEnergy > 0.04
+    ) {
       this.reactive.accent =
         "rgba(255, 42, 72, 1)";
       this.reactive.accentSoft =
         "rgba(255, 42, 72, 0.34)";
     } else {
       this.reactive.accent =
-        signature.accent ||
         "rgba(255, 201, 84, 1)";
       this.reactive.accentSoft =
-        signature.accentSoft ||
         "rgba(255, 201, 84, 0.34)";
+    }
+
+    if (this.overlay?.dataset) {
+      this.overlay.dataset.scene =
+        scene;
+      this.overlay.dataset.quality =
+        budget.profile || "ultra";
     }
 
     this.applyReactiveStyle();
@@ -1193,7 +1250,10 @@ const SoulNowPlaying = {
       "--now-playing-voice":
         this.reactive.voiceEnergy,
       "--now-playing-pulse":
-        this.reactive.pulse
+        this.reactive.pulse,
+      "--now-playing-runner-x":
+        `${8 +
+          this.reactive.pulse * 58}%`
     };
 
     const entries =
@@ -1225,6 +1285,11 @@ const SoulNowPlaying = {
     }
 
     this.eventsBound = true;
+
+    runtime.addEventListener(
+      "resize",
+      () => this.applyDesignLayout()
+    );
 
     runtime.addEventListener(
       "soulmusic:pause",
@@ -1338,6 +1403,11 @@ const SoulNowPlaying = {
         this.pollInterval,
       position:
         this.position,
+      compactEnabled:
+        this.compactEnabled,
+      layout: {
+        ...this.layout
+      },
       state: this.state,
       current:
         this.current
@@ -1363,6 +1433,125 @@ const SoulNowPlaying = {
       element.textContent =
         String(value || "");
     }
+  },
+
+  applyDesignLayout() {
+    if (!this.overlay?.style) {
+      return null;
+    }
+
+    const document =
+      this.getRuntime()?.document;
+    const leftFrame =
+      document?.getElementById?.(
+        "leftFrame"
+      );
+    const tiktok =
+      document?.getElementById?.(
+        "tiktokButton"
+      );
+    const frameLeft = Number(
+      leftFrame?.offsetLeft
+    );
+    const frameWidth = Number(
+      leftFrame?.offsetWidth
+    );
+    const tiktokLeft = Number(
+      tiktok?.offsetLeft
+    );
+    const safeLeft =
+      (
+        frameLeft > 0
+          ? frameLeft
+          : 22
+      ) +
+      (
+        frameWidth > 0
+          ? frameWidth
+          : 520
+      ) + 23;
+    const safeRight =
+      (
+        tiktokLeft > 0
+          ? tiktokLeft
+          : 1570
+      ) - 105;
+    const width = this.clamp(
+      safeRight - safeLeft,
+      760,
+      900
+    );
+    const left =
+      safeLeft + width / 2;
+
+    this.layout = {
+      left: safeLeft,
+      top: 24,
+      width,
+      minHeight: 132,
+      gapAfterLeftFrame: 23,
+      gapBeforeTikTok:
+        (
+          tiktokLeft > 0
+            ? tiktokLeft
+            : 1570
+        ) -
+        (safeLeft + width)
+    };
+
+    this.overlay.style.left =
+      `${left}px`;
+    this.overlay.style.top = "24px";
+    this.overlay.style.width =
+      `${width}px`;
+    this.overlay.style.minHeight =
+      "132px";
+
+    return {
+      ...this.layout,
+      center: left,
+      right: safeLeft + width
+    };
+  },
+
+  applyTitleFit(title) {
+    if (!this.elements.title?.style) {
+      return 38;
+    }
+
+    const length =
+      String(title || "").length;
+    const fontSize =
+      length <= 22
+        ? 42
+        : length <= 34
+          ? 38
+          : length <= 48
+            ? 34
+            : length <= 64
+              ? 30
+              : 27;
+    const size =
+      length <= 34
+        ? "large"
+        : length <= 64
+          ? "medium"
+          : "long";
+
+    this.elements.title.style
+      .setProperty(
+        "--now-playing-title-size",
+        `${fontSize}px`
+      );
+
+    if (this.overlay?.dataset) {
+      this.overlay.dataset.titleSize =
+        size;
+      this.overlay.dataset.titleLength =
+        String(length);
+    }
+
+    return fontSize;
   },
 
   setTimeout(callback, delay) {

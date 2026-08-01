@@ -635,13 +635,13 @@ img {
 #nowPlaying {
   position: absolute;
 
-  left: 960px;
-  top: 650px;
+  left: 1015px;
+  top: 24px;
 
   z-index: 17;
 
-  width: 660px;
-  min-height: 128px;
+  width: 900px;
+  min-height: 132px;
 
   translate:
     calc(
@@ -689,24 +689,24 @@ img {
 
   display: grid;
   grid-template-columns:
-    92px 1fr 58px;
+    102px 1fr 62px;
   align-items: center;
-  gap: 18px;
+  gap: 20px;
 
   width: 100%;
   min-height: inherit;
 
-  padding: 16px 20px;
+  padding: 14px 22px 22px;
 
   overflow: hidden;
 
-  border-radius: 30px;
+  border-radius: 26px;
 
   background:
     linear-gradient(
       135deg,
-      rgba(16, 17, 38, 0.95),
-      rgba(5, 6, 18, 0.98)
+      rgba(14, 16, 34, 0.97),
+      rgba(4, 5, 15, 0.995)
     );
 
   border:
@@ -731,6 +731,30 @@ img {
     ),
     inset 0 0 28px
     rgba(255, 255, 255, 0.035);
+}
+
+#nowPlaying[data-state="revealed"]
+  .now-playing-shell {
+  animation:
+    now-playing-reveal 0.52s
+    cubic-bezier(0.2, 0.8, 0.2, 1)
+    both;
+}
+
+@keyframes now-playing-reveal {
+  from {
+    opacity: 0;
+    transform:
+      translateY(-16px)
+      scale(0.975);
+  }
+
+  to {
+    opacity: 1;
+    transform:
+      translateY(0)
+      scale(1);
+  }
 }
 
 .now-playing-shell::before {
@@ -763,6 +787,56 @@ img {
   pointer-events: none;
 }
 
+.now-playing-light-runner {
+  position: absolute;
+
+  left:
+    var(--now-playing-runner-x, 8%);
+  top: -2px;
+
+  z-index: 2;
+
+  width: 29%;
+  height: 5px;
+
+  border-radius: 999px;
+
+  opacity:
+    calc(
+      0.48 +
+      var(--now-playing-music, 0) *
+      0.28
+    );
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      var(
+        --now-playing-accent,
+        #ffd96a
+      ),
+      transparent
+    );
+
+  box-shadow:
+    0 0 12px
+    var(
+      --now-playing-accent,
+      #ffd96a
+    ),
+    0 0 26px
+    var(
+      --now-playing-accent-soft,
+      rgba(255, 201, 84, 0.34)
+    );
+
+  transition:
+    left 0.10s linear,
+    background 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
 .now-playing-logo-wrap {
   position: relative;
   z-index: 1;
@@ -771,10 +845,10 @@ img {
   align-items: center;
   justify-content: center;
 
-  width: 84px;
-  height: 84px;
+  width: 94px;
+  height: 94px;
 
-  border-radius: 24px;
+  border-radius: 22px;
 
   background:
     radial-gradient(
@@ -785,8 +859,8 @@ img {
 }
 
 .now-playing-logo {
-  width: 78px;
-  height: 78px;
+  width: 88px;
+  height: 88px;
   object-fit: contain;
 
   filter:
@@ -816,7 +890,7 @@ img {
       #ffd96a
     );
 
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 900;
   letter-spacing: 2.2px;
 }
@@ -830,13 +904,23 @@ img {
   margin-top: 5px;
 
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+
+  display: -webkit-box;
+
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+
+  white-space: normal;
 
   color: #fff;
 
-  font-size: 30px;
+  font-size:
+    var(
+      --now-playing-title-size,
+      38px
+    );
   font-weight: 900;
+  line-height: 1.03;
   letter-spacing: 0.4px;
 
   text-shadow:
@@ -856,7 +940,7 @@ img {
   color:
     rgba(255, 255, 255, 0.68);
 
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 800;
   letter-spacing: 0.8px;
 }
@@ -875,7 +959,7 @@ img {
   color:
     rgba(255, 255, 255, 0.52);
 
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
 }
 
@@ -909,6 +993,46 @@ img {
 
   font-size: 17px;
   font-weight: 900;
+}
+
+.now-playing-original-badge {
+  position: absolute;
+
+  right: 22px;
+  bottom: 8px;
+
+  z-index: 2;
+
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  color:
+    rgba(255, 236, 176, 0.74);
+
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 1.6px;
+}
+
+.now-playing-original-badge span {
+  width: 6px;
+  height: 6px;
+
+  border-radius: 50%;
+
+  background:
+    var(
+      --now-playing-accent,
+      #ffd96a
+    );
+
+  box-shadow:
+    0 0 10px
+    var(
+      --now-playing-accent,
+      #ffd96a
+    );
 }
 
 #nowPlaying[data-state="compact"] {
@@ -999,6 +1123,15 @@ body[data-quality="performance"]
 
 body[data-quality="performance"]
 .now-playing-shell::before {
+  display: none;
+}
+
+#nowPlaying[data-quality="performance"]
+  .now-playing-light-runner,
+#nowPlaying[data-quality="emergency"]
+  .now-playing-light-runner,
+#nowPlaying[data-quality="emergency"]
+  .now-playing-shell::before {
   display: none;
 }
 
