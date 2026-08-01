@@ -997,6 +997,33 @@ body[data-quality="performance"]
     rgba(255, 41, 79, 0.42);
 }
 
+#sceneDirectorStatus {
+  color:
+    rgba(255, 232, 155, 0.90);
+
+  border-color:
+    rgba(255, 217, 106, 0.13) !important;
+
+  background:
+    rgba(255, 217, 106, 0.045) !important;
+}
+
+#sceneDirectorStatus[data-scene="red-voice"] {
+  color: var(--red);
+
+  text-shadow:
+    0 0 10px
+    rgba(255, 41, 79, 0.42);
+}
+
+#sceneDirectorStatus[data-scene="legendary-wings"] {
+  color: var(--gold-light);
+
+  text-shadow:
+    0 0 12px
+    rgba(255, 217, 106, 0.48);
+}
+
 /* =========================================================
    BUTOANE TIKTOK + LIVE
 ========================================================= */
