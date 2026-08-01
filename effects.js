@@ -10,6 +10,7 @@ const SoulEffects = {
   height: 1080,
 
   paused: false,
+  frameNeonExclusive: false,
 
   musicEnergy: 0,
   voiceEnergy: 0,
@@ -2998,15 +2999,24 @@ const SoulEffects = {
           `;
     }
 
-    this.updateCssNeon(
-      time,
-      engine
-    );
+    if (!this.frameNeonExclusive) {
+      this.updateCssNeon(
+        time,
+        engine
+      );
 
-    this.animateCssRunners(
-      time,
-      music
-    );
+      this.animateCssRunners(
+        time,
+        music
+      );
+    }
+  },
+
+  setFrameNeonExclusive(enabled = true) {
+    this.frameNeonExclusive =
+      Boolean(enabled);
+
+    return this.frameNeonExclusive;
   },
 
   updateCssNeon(
@@ -3156,6 +3166,8 @@ const SoulEffects = {
         this.musicEnergy,
       voiceEnergy:
         this.voiceEnergy,
+      frameNeonExclusive:
+        this.frameNeonExclusive,
       bassImpact:
         this.bassImpact,
       dropEnergy:
