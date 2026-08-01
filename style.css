@@ -276,14 +276,14 @@ img {
 
   border:
     4px solid
-    rgba(40, 232, 255, 0.48);
+    rgba(255, 217, 106, 0.76);
 
   opacity: 0.78;
 
   box-shadow:
-    0 0 12px rgba(40, 232, 255, 0.60),
-    0 0 26px rgba(255, 53, 211, 0.40),
-    0 0 56px rgba(43, 143, 255, 0.24),
+    0 0 12px rgba(255, 217, 106, 0.76),
+    0 0 30px rgba(255, 177, 42, 0.46),
+    0 0 58px rgba(255, 217, 106, 0.24),
     inset 0 0 20px rgba(255, 255, 255, 0.06);
 
   transition:
@@ -321,7 +321,40 @@ img {
     0 0 16px rgba(255, 255, 255, 0.86),
     0 0 28px rgba(40, 232, 255, 0.50);
 
-  opacity: 0.42;
+  opacity: 0.62;
+
+  will-change:
+    left,
+    top,
+    width,
+    height,
+    opacity;
+}
+
+.frame-runner-secondary {
+  opacity: 0.34;
+}
+
+#cameraFrame .frame-runner-secondary {
+  display: none;
+}
+
+#stage[data-frame-neon="active"]
+  .reactive-frame .frame-neon,
+#stage[data-frame-neon="active"]
+  .reactive-frame .frame-runner {
+  transition:
+    border-color 0.16s ease-out,
+    opacity 0.16s ease-out,
+    box-shadow 0.16s ease-out,
+    background 0.16s ease-out;
+}
+
+#stage[data-frame-neon-profile="emergency"]
+  #leftFrame .frame-runner-secondary,
+#stage[data-frame-neon-profile="performance"]
+  #leftFrame .frame-runner-secondary {
+  display: none;
 }
 
 /* Colțuri tehnice */

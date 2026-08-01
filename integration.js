@@ -9,7 +9,7 @@
 */
 
 const SoulIntegration = {
-  version: "1.1.0-design-v2-step2",
+  version: "1.2.0-design-v2-step3",
 
   ready: false,
   starting: false,
@@ -54,6 +54,7 @@ const SoulIntegration = {
       this.initializeSignature();
       this.initializeSceneDirector();
       this.initializeLogoScenes();
+      this.initializeFrameNeon();
       this.initializeNowPlaying();
       this.initializeLiveCheck();
       this.syncPerformanceBudget();
@@ -117,6 +118,9 @@ const SoulIntegration = {
       logoScenes:
         overrides.logoScenes ||
         runtime?.SoulLogoScenes,
+      frameNeon:
+        overrides.frameNeon ||
+        runtime?.SoulFrameNeon,
       nowPlaying:
         overrides.nowPlaying ||
         runtime?.SoulNowPlaying,
@@ -142,6 +146,7 @@ const SoulIntegration = {
       "signature",
       "sceneDirector",
       "logoScenes",
+      "frameNeon",
       "nowPlaying",
       "liveCheck"
     ];
@@ -311,6 +316,40 @@ const SoulIntegration = {
           this.modules.performance,
         legacyVisualizer:
           this.modules.visualizer,
+        autoStart: true
+      })
+    );
+  },
+
+  initializeFrameNeon() {
+    const module =
+      this.modules.frameNeon;
+
+    if (!module?.init) {
+      return false;
+    }
+
+    return this.safeInit(
+      "frameNeon",
+      () => module.init({
+        stage:
+          this.modules.sceneGraph
+            ?.getNode?.("stage")
+            ?.element,
+        leftFrame:
+          this.modules.sceneGraph
+            ?.getNode?.("leftFrame")
+            ?.element,
+        cameraFrame:
+          this.modules.sceneGraph
+            ?.getNode?.("cameraFrame")
+            ?.element,
+        director:
+          this.modules.sceneDirector,
+        performanceEngine:
+          this.modules.performance,
+        legacyEffects:
+          this.modules.effects,
         autoStart: true
       })
     );

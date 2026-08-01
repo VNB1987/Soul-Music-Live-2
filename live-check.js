@@ -308,6 +308,7 @@ const SoulLiveCheck = {
       ["Signature", runtime?.SoulSignature],
       ["Scene Director", runtime?.SoulSceneDirector],
       ["Logo Scenes", runtime?.SoulLogoScenes],
+      ["Frame Neon", runtime?.SoulFrameNeon],
       ["Now Playing", runtime?.SoulNowPlaying]
     ];
 
@@ -336,7 +337,7 @@ const SoulLiveCheck = {
       critical: true,
       detail:
         stopped.length === 0
-          ? "7 motoare adaptive active"
+          ? "8 motoare adaptive active"
           : `Motoare oprite: ${stopped.join(", ")}`
     });
   },
