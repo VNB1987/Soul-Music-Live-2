@@ -1625,6 +1625,22 @@ body[data-quality="performance"]
   width:
     min(820px, 95vw);
 
+  max-height:
+    calc(100vh - 24px);
+
+  overflow-y:
+    auto;
+
+  overscroll-behavior:
+    contain;
+
+  scrollbar-width:
+    thin;
+
+  scrollbar-color:
+    rgba(255, 217, 106, 0.48)
+    rgba(255, 255, 255, 0.04);
+
   z-index: 100;
 
   padding: 24px;
@@ -1648,6 +1664,19 @@ body[data-quality="performance"]
     0 28px 90px rgba(0, 0, 0, 0.78),
     0 0 38px rgba(255, 53, 211, 0.13),
     inset 0 0 24px rgba(255, 255, 255, 0.025);
+}
+
+#controlPanel::-webkit-scrollbar {
+  width:
+    8px;
+}
+
+#controlPanel::-webkit-scrollbar-thumb {
+  border-radius:
+    999px;
+
+  background:
+    rgba(255, 217, 106, 0.42);
 }
 
 .panel-heading {
@@ -1679,6 +1708,41 @@ body[data-quality="performance"]
   font-weight: 700;
 
   letter-spacing: 2px;
+}
+
+.release-badge {
+  display: inline-flex;
+
+  margin-top:
+    9px;
+
+  padding:
+    5px 11px;
+
+  border-radius:
+    999px;
+
+  color:
+    #13100a;
+
+  background:
+    linear-gradient(
+      90deg,
+      #ffe58a,
+      #62e7ff
+    );
+
+  box-shadow:
+    0 0 16px rgba(255, 218, 104, 0.20);
+
+  font-size:
+    9px;
+
+  font-weight:
+    950;
+
+  letter-spacing:
+    1.2px;
 }
 
 .control-section {
@@ -2216,15 +2280,39 @@ body[data-quality="performance"]
   display: grid;
 
   grid-template-columns:
+    1.35fr
+    0.8fr
     1fr
-    1fr
-    1.4fr;
+    1.25fr;
 
   gap:
     10px;
 
   margin-top:
     12px;
+}
+
+#runLiveCheck {
+  color:
+    #07120f;
+
+  background:
+    linear-gradient(
+      90deg,
+      #54efbf,
+      #50d8ff
+    );
+
+  box-shadow:
+    0 0 18px rgba(74, 231, 207, 0.20);
+}
+
+#runLiveCheck:disabled {
+  cursor:
+    wait;
+
+  opacity:
+    0.72;
 }
 
 #resetControls {
@@ -2296,6 +2384,63 @@ body[data-quality="performance"]
   border:
     1px solid
     rgba(255, 255, 255, 0.06);
+}
+
+.live-check-details {
+  margin-top:
+    10px;
+
+  padding:
+    10px 13px;
+
+  border-radius:
+    12px;
+
+  white-space:
+    pre-line;
+
+  color:
+    rgba(255, 255, 255, 0.68);
+
+  background:
+    rgba(255, 255, 255, 0.035);
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.07);
+
+  font-size:
+    11px;
+
+  font-weight:
+    750;
+
+  line-height:
+    1.45;
+}
+
+.live-check-details[data-state="ready"] {
+  color:
+    #7cffb0;
+
+  border-color:
+    rgba(76, 255, 143, 0.22);
+}
+
+.live-check-details[data-state="warning"] {
+  color:
+    #ffe08a;
+
+  border-color:
+    rgba(255, 217, 106, 0.22);
+}
+
+.live-check-details[data-state="not-ready"] {
+  color:
+    #ff7188;
+
+  border-color:
+    rgba(255, 41, 79, 0.24);
 }
 
 #statusText {
