@@ -253,6 +253,7 @@ const SoulLiveCheck = {
     const ids = [
       "ambientCanvas",
       "visualizerCanvas",
+      "logoScenesCanvas",
       "effectsCanvas"
     ];
 
@@ -291,7 +292,7 @@ const SoulLiveCheck = {
       critical: true,
       detail:
         invalid.length === 0
-          ? "3 canvas-uri la 1920 × 1080"
+          ? "4 canvas-uri la 1920 × 1080"
           : `Canvas invalid: ${invalid.join(", ")}`
     });
   },
@@ -306,6 +307,7 @@ const SoulLiveCheck = {
       ["Performance", runtime?.SoulPerformance],
       ["Signature", runtime?.SoulSignature],
       ["Scene Director", runtime?.SoulSceneDirector],
+      ["Logo Scenes", runtime?.SoulLogoScenes],
       ["Now Playing", runtime?.SoulNowPlaying]
     ];
 
@@ -334,7 +336,7 @@ const SoulLiveCheck = {
       critical: true,
       detail:
         stopped.length === 0
-          ? "6 motoare adaptive active"
+          ? "7 motoare adaptive active"
           : `Motoare oprite: ${stopped.join(", ")}`
     });
   },
