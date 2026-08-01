@@ -111,9 +111,15 @@
         data-position="top-center"
         aria-label="Melodia redată acum"
         aria-live="polite"
+        aria-atomic="true"
         hidden
       >
         <div class="now-playing-shell">
+          <div
+            class="now-playing-light-runner"
+            aria-hidden="true"
+          ></div>
+
           <div class="now-playing-logo-wrap">
             <img
               class="now-playing-logo"
@@ -169,6 +175,14 @@
             aria-hidden="true"
           >
             ♪
+          </div>
+
+          <div
+            class="now-playing-original-badge"
+            aria-hidden="true"
+          >
+            <span></span>
+            ORIGINAL MUSIC
           </div>
         </div>
       </section>
