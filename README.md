@@ -2,6 +2,21 @@
 
 Motor vizual audio-reactiv Full HD pentru TikTok LIVE Studio.
 
+## Design V2 — Pasul 3: neon inteligent pentru cadre
+
+`frame-neon.js` preia exclusiv cele două rame principale:
+
+- cadrul stâng păstrează neon auriu permanent și două impulsuri luminoase care
+  călătoresc în sens opus pe întregul perimetru;
+- cadrul camerei păstrează un neon auriu stabil, cu respirație lentă;
+- scena `Red Voice` transformă controlat ambele rame în roșu și le pulsează
+  după energia microfonului;
+- viteza și intensitatea răspund diferit la Soul Flow, Bass Crown și Legendary;
+- profilurile de performanță reduc automat blurul și al doilea runner.
+
+Motorul vechi de efecte continuă să funcționeze, dar nu mai poate suprascrie
+culorile sau mișcarea neonului noilor cadre.
+
 ## Design V2 — Pasul 2: patru scene pentru orga logo-ului
 
 `logo-scenes.js` desenează noua orgă pe un strat Full HD dedicat, controlat
