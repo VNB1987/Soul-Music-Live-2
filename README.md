@@ -2,6 +2,23 @@
 
 Motor vizual audio-reactiv Full HD pentru TikTok LIVE Studio.
 
+## Design V2 — Pasul 1: Scene Director
+
+`scene-director.js` este regizorul automat care pregătește noul design fără
+să modifice layoutul stabil. El alege controlat între:
+
+- `idle` — repaus elegant;
+- `soul-flow` — muzică fluidă;
+- `bass-crown` — bass și beat dominante;
+- `legendary-wings` — moment energetic cu cooldown;
+- `red-voice` — scenă prioritară pentru microfon.
+
+Directorul folosește timpi minimi, confirmări și hysteresis pentru a evita
+schimbările haotice. Starea curentă este publicată prin `data-soul-scene`,
+variabile CSS și evenimentul `soulmusic:scenechange`. API-ul oferă și control
+manual prin `SoulSceneDirector.setManualScene(...)` și revenire automată prin
+`SoulSceneDirector.clearManualScene()`.
+
 ## Etapa 0 — Scene Graph
 
 `scene-graph.js` definește sursa unică de adevăr pentru scena 1920 × 1080:
