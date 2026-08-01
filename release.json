@@ -1,0 +1,9 @@
+{
+  "name": "Soul Music Live 2",
+  "release": "SOUL-MUSIC-LIVE-2-DESIGN-V2-FINAL",
+  "version": "2.0.0",
+  "build": "2026.08.01",
+  "port": 8766,
+  "resolution": "1920x1080",
+  "fps": 60
+}
