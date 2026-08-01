@@ -1,6 +1,8 @@
 "use strict";
 
 const SoulEffects = {
+  version: "0.2.0-stage2",
+
   canvas: null,
   context: null,
 
@@ -16,12 +18,94 @@ const SoulEffects = {
   previousBass: 0,
   bassImpact: 0,
 
+  previousDropBass: 0,
+  bassHistory: [],
+  energyHistory: [],
+
+  lastImpactTime: 0,
+  lastDropTime: 0,
+  lastFrameTime: 0,
+  deltaSeconds: 1 / 60,
+
+  flashEnergy: 0,
+  dropEnergy: 0,
+
   borderPosition: 0,
   tiktokRotation: 0,
 
   ambientParticles: [],
   burstParticles: [],
   lightTrails: [],
+  dropWaves: [],
+
+  fxStats: {
+    impacts: 0,
+    drops: 0,
+    particlesCreated: 0,
+    trailsCreated: 0
+  },
+
+  fxProfiles: {
+    calm: {
+      dropRatio: 1.72,
+      dropSlope: 0.10,
+      dropCooldown: 920,
+      impactCooldown: 190,
+      flashOpacity: 0.055,
+      waveCount: 1,
+      waveSpeed: 310,
+      burstMultiplier: 0.55,
+      trailMultiplier: 0.50,
+      maxBursts: 150,
+      maxTrails: 10,
+      maxWaves: 3
+    },
+
+    live: {
+      dropRatio: 1.54,
+      dropSlope: 0.075,
+      dropCooldown: 680,
+      impactCooldown: 145,
+      flashOpacity: 0.085,
+      waveCount: 2,
+      waveSpeed: 370,
+      burstMultiplier: 0.85,
+      trailMultiplier: 0.80,
+      maxBursts: 260,
+      maxTrails: 20,
+      maxWaves: 5
+    },
+
+    party: {
+      dropRatio: 1.38,
+      dropSlope: 0.060,
+      dropCooldown: 520,
+      impactCooldown: 115,
+      flashOpacity: 0.115,
+      waveCount: 3,
+      waveSpeed: 430,
+      burstMultiplier: 1.08,
+      trailMultiplier: 1.05,
+      maxBursts: 360,
+      maxTrails: 30,
+      maxWaves: 7
+    },
+
+    legendary: {
+      dropRatio: 1.26,
+      dropSlope: 0.048,
+      dropCooldown: 410,
+      impactCooldown: 90,
+      flashOpacity: 0.145,
+      waveCount: 4,
+      waveSpeed: 490,
+      burstMultiplier: 1.30,
+      trailMultiplier: 1.28,
+      maxBursts: 450,
+      maxTrails: 40,
+      maxWaves: 9
+    }
+  },
 
   elements: {},
 
@@ -166,10 +250,27 @@ const SoulEffects = {
     this.afterglow = 0;
     this.previousBass = 0;
     this.bassImpact = 0;
+    this.previousDropBass = 0;
+    this.bassHistory = [];
+    this.energyHistory = [];
+    this.lastImpactTime = 0;
+    this.lastDropTime = 0;
+    this.lastFrameTime = 0;
+    this.deltaSeconds = 1 / 60;
+    this.flashEnergy = 0;
+    this.dropEnergy = 0;
     this.borderPosition = 0;
     this.tiktokRotation = 0;
     this.burstParticles = [];
     this.lightTrails = [];
+    this.dropWaves = [];
+
+    this.fxStats = {
+      impacts: 0,
+      drops: 0,
+      particlesCreated: 0,
+      trailsCreated: 0
+    };
   },
 
   createAmbientParticles() {
@@ -242,8 +343,27 @@ const SoulEffects = {
       this.paused ||
       !window.SoulAudio
     ) {
+      this.lastFrameTime = 0;
       return;
     }
+
+    if (!this.lastFrameTime) {
+      this.lastFrameTime = time;
+    }
+
+    this.deltaSeconds =
+      Math.min(
+        0.05,
+        Math.max(
+          1 / 240,
+          (
+            time -
+            this.lastFrameTime
+          ) / 1000
+        )
+      );
+
+    this.lastFrameTime = time;
 
     const audio =
       SoulAudio.getState();
@@ -309,7 +429,18 @@ const SoulEffects = {
       );
 
     this.detectBassImpact(
+      time,
       music,
+      engine
+    );
+
+    this.detectDrop(
+      time,
+      music,
+      engine
+    );
+
+    this.enforceFxBudgets(
       engine
     );
 
@@ -392,6 +523,12 @@ const SoulEffects = {
       engine
     );
 
+    this.drawDropWaves(
+      time,
+      audio,
+      engine
+    );
+
     this.drawCinematicTrails(
       time,
       music,
@@ -405,6 +542,12 @@ const SoulEffects = {
       engine
     );
 
+    this.drawSynchronizedFlash(
+      time,
+      audio,
+      engine
+    );
+
     this.animateDomElements(
       time,
       music,
@@ -412,10 +555,30 @@ const SoulEffects = {
       engine
     );
 
-    this.bassImpact *= 0.86;
+    const frameFactor =
+      this.deltaSeconds * 60;
+
+    this.bassImpact *=
+      Math.pow(
+        0.86,
+        frameFactor
+      );
+
+    this.flashEnergy *=
+      Math.pow(
+        0.78,
+        frameFactor
+      );
+
+    this.dropEnergy *=
+      Math.pow(
+        0.90,
+        frameFactor
+      );
   },
 
   detectBassImpact(
+    time,
     music,
     engine
   ) {
@@ -443,9 +606,14 @@ const SoulEffects = {
     if (
       music.active &&
       bass > 0.15 &&
-      difference > threshold
+      difference > threshold &&
+      time - this.lastImpactTime >=
+        this.getFxProfile(engine)
+          .impactCooldown
     ) {
       this.bassImpact = 1;
+      this.lastImpactTime = time;
+      this.fxStats.impacts += 1;
 
       this.createBassBurst(
         bass,
@@ -460,6 +628,264 @@ const SoulEffects = {
 
     this.previousBass =
       bass;
+  },
+
+  getFxProfile(engine = {}) {
+    return (
+      this.fxProfiles[
+        engine.mode || "live"
+      ] ||
+      this.fxProfiles.live
+    );
+  },
+
+  detectDrop(
+    time,
+    music,
+    engine
+  ) {
+    const bass =
+      Number(music.bass || 0);
+
+    const level =
+      Number(music.level || 0);
+
+    const profile =
+      this.getFxProfile(engine);
+
+    const bassAverage =
+      this.averageHistory(
+        this.bassHistory,
+        0.08
+      );
+
+    const energyAverage =
+      this.averageHistory(
+        this.energyHistory,
+        0.08
+      );
+
+    const ratio =
+      bass /
+      Math.max(
+        0.055,
+        bassAverage
+      );
+
+    const slope =
+      bass -
+      this.previousDropBass;
+
+    const energyRise =
+      level -
+      energyAverage;
+
+    const cooledDown =
+      time -
+      this.lastDropTime >=
+      profile.dropCooldown;
+
+    const isDrop =
+      music.active &&
+      bass > 0.22 &&
+      level > 0.13 &&
+      slope > profile.dropSlope &&
+      ratio > profile.dropRatio &&
+      energyRise > -0.015 &&
+      cooledDown;
+
+    if (isDrop) {
+      const strength =
+        this.clamp(
+          (
+            ratio -
+            profile.dropRatio
+          ) * 0.72 +
+          bass * 0.72 +
+          Math.max(
+            0,
+            energyRise
+          ) * 0.55,
+          0.35,
+          1
+        );
+
+      this.triggerDrop(
+        time,
+        strength,
+        music,
+        engine
+      );
+    }
+
+    this.pushHistory(
+      this.bassHistory,
+      bass,
+      42
+    );
+
+    this.pushHistory(
+      this.energyHistory,
+      level,
+      42
+    );
+
+    this.previousDropBass =
+      bass;
+  },
+
+  triggerDrop(
+    time,
+    strength,
+    music,
+    engine
+  ) {
+    const profile =
+      this.getFxProfile(engine);
+
+    this.lastDropTime = time;
+    this.dropEnergy =
+      Math.max(
+        this.dropEnergy,
+        strength
+      );
+    this.flashEnergy =
+      Math.max(
+        this.flashEnergy,
+        strength
+      );
+    this.bassImpact = 1;
+    this.fxStats.drops += 1;
+
+    const waveCount =
+      Math.max(
+        1,
+        Math.round(
+          profile.waveCount *
+          (
+            0.65 +
+            strength * 0.35
+          )
+        )
+      );
+
+    for (
+      let index = 0;
+      index < waveCount;
+      index += 1
+    ) {
+      this.dropWaves.push({
+        radius: 90 + index * 32,
+        life: 1,
+        strength,
+        speed:
+          profile.waveSpeed *
+          (
+            0.82 +
+            index * 0.08
+          ),
+        hue:
+          (
+            time * 0.05 +
+            index * 72
+          ) % 360,
+        delay:
+          index * 0.065
+      });
+    }
+
+    this.createBassBurst(
+      Math.min(
+        1,
+        Number(music.bass || 0) *
+        (
+          1 +
+          strength *
+          profile.burstMultiplier
+        )
+      ),
+      engine
+    );
+
+    const trailBursts =
+      Math.max(
+        1,
+        Math.round(
+          profile.trailMultiplier *
+          (
+            1 +
+            strength
+          )
+        )
+      );
+
+    for (
+      let index = 0;
+      index < trailBursts;
+      index += 1
+    ) {
+      this.createLightTrail(
+        strength,
+        engine
+      );
+    }
+
+    this.emitFxEvent(
+      "soulmusic:drop",
+      {
+        time,
+        strength,
+        mode:
+          engine.mode ||
+          "live",
+        drops:
+          this.fxStats.drops
+      }
+    );
+  },
+
+  averageHistory(
+    values,
+    fallback = 0
+  ) {
+    if (!values.length) {
+      return fallback;
+    }
+
+    return values.reduce(
+      (total, value) =>
+        total + value,
+      0
+    ) / values.length;
+  },
+
+  pushHistory(
+    values,
+    value,
+    limit
+  ) {
+    values.push(value);
+
+    if (values.length > limit) {
+      values.splice(
+        0,
+        values.length - limit
+      );
+    }
+  },
+
+  clamp(
+    value,
+    minimum,
+    maximum
+  ) {
+    return Math.min(
+      maximum,
+      Math.max(
+        minimum,
+        Number(value) || 0
+      )
+    );
   },
 
   getRainbowColor(
@@ -1544,6 +1970,9 @@ const SoulEffects = {
       });
     }
 
+    this.fxStats.particlesCreated +=
+      count;
+
     if (
       this.burstParticles.length >
       450
@@ -1653,6 +2082,269 @@ const SoulEffects = {
       context.fill();
 
       context.restore();
+    }
+  },
+
+  drawDropWaves(
+    time,
+    audio,
+    engine
+  ) {
+    if (!this.dropWaves.length) {
+      return;
+    }
+
+    const context =
+      this.context;
+
+    const centerX = 960;
+    const centerY = 375;
+
+    for (
+      let index =
+        this.dropWaves.length - 1;
+      index >= 0;
+      index -= 1
+    ) {
+      const wave =
+        this.dropWaves[index];
+
+      if (wave.delay > 0) {
+        wave.delay -=
+          this.deltaSeconds;
+
+        continue;
+      }
+
+      wave.radius +=
+        wave.speed *
+        this.deltaSeconds;
+
+      wave.life -=
+        this.deltaSeconds *
+        0.88;
+
+      if (wave.life <= 0) {
+        this.dropWaves.splice(
+          index,
+          1
+        );
+
+        continue;
+      }
+
+      const opacity =
+        this.clamp(
+          wave.life *
+          wave.strength *
+          0.42,
+          0,
+          0.46
+        );
+
+      const hue =
+        (
+          wave.hue +
+          time * 0.025
+        ) % 360;
+
+      const color =
+        this.voiceEnergy > 0.02
+          ? `rgba(
+              255,
+              42,
+              80,
+              ${opacity}
+            )`
+          : `hsla(
+              ${hue},
+              100%,
+              68%,
+              ${opacity}
+            )`;
+
+      context.save();
+
+      context.beginPath();
+
+      context.ellipse(
+        centerX,
+        centerY,
+        wave.radius,
+        wave.radius * 0.56,
+        0,
+        0,
+        Math.PI * 2
+      );
+
+      context.lineWidth =
+        1.5 +
+        wave.life *
+        wave.strength *
+        5;
+
+      context.strokeStyle =
+        color;
+
+      context.shadowColor =
+        color;
+
+      context.shadowBlur =
+        (
+          18 +
+          wave.life * 45
+        ) *
+        audio.neonIntensity *
+        engine.preset
+          .effectMultiplier;
+
+      context.stroke();
+
+      context.restore();
+    }
+  },
+
+  drawSynchronizedFlash(
+    time,
+    audio,
+    engine
+  ) {
+    if (this.flashEnergy < 0.015) {
+      return;
+    }
+
+    const context =
+      this.context;
+
+    const profile =
+      this.getFxProfile(engine);
+
+    const opacity =
+      this.clamp(
+        this.flashEnergy *
+        profile.flashOpacity *
+        audio.neonIntensity *
+        engine.preset
+          .effectMultiplier,
+        0,
+        0.16
+      );
+
+    const hue =
+      (
+        time * 0.05
+      ) % 360;
+
+    const gradient =
+      context.createRadialGradient(
+        960,
+        375,
+        20,
+        960,
+        375,
+        980
+      );
+
+    gradient.addColorStop(
+      0,
+      `rgba(
+        255,
+        255,
+        255,
+        ${opacity}
+      )`
+    );
+
+    gradient.addColorStop(
+      0.30,
+      `hsla(
+        ${hue},
+        100%,
+        72%,
+        ${opacity * 0.74}
+      )`
+    );
+
+    gradient.addColorStop(
+      1,
+      "rgba(0, 0, 0, 0)"
+    );
+
+    context.save();
+
+    context.globalCompositeOperation =
+      "screen";
+
+    context.fillStyle =
+      gradient;
+
+    context.fillRect(
+      0,
+      0,
+      this.width,
+      this.height
+    );
+
+    context.restore();
+  },
+
+  enforceFxBudgets(engine) {
+    const profile =
+      this.getFxProfile(engine);
+
+    const quality =
+      this.clamp(
+        engine.qualityMultiplier || 1,
+        0.35,
+        1
+      );
+
+    const limits = {
+      bursts:
+        Math.round(
+          profile.maxBursts *
+          quality
+        ),
+      trails:
+        Math.round(
+          profile.maxTrails *
+          quality
+        ),
+      waves:
+        Math.max(
+          2,
+          Math.round(
+            profile.maxWaves *
+            quality
+          )
+        )
+    };
+
+    this.trimArray(
+      this.burstParticles,
+      limits.bursts
+    );
+
+    this.trimArray(
+      this.lightTrails,
+      limits.trails
+    );
+
+    this.trimArray(
+      this.dropWaves,
+      limits.waves
+    );
+  },
+
+  trimArray(
+    values,
+    limit
+  ) {
+    if (values.length > limit) {
+      values.splice(
+        0,
+        values.length - limit
+      );
     }
   },
 
@@ -1847,6 +2539,9 @@ const SoulEffects = {
           360
       });
     }
+
+    this.fxStats.trailsCreated +=
+      count;
 
     if (
       this.lightTrails.length >
@@ -2451,6 +3146,53 @@ const SoulEffects = {
         .style.transform =
         `translateX(${cameraPosition}px)`;
     }
+  },
+
+  getState() {
+    return {
+      version: this.version,
+      paused: this.paused,
+      musicEnergy:
+        this.musicEnergy,
+      voiceEnergy:
+        this.voiceEnergy,
+      bassImpact:
+        this.bassImpact,
+      dropEnergy:
+        this.dropEnergy,
+      flashEnergy:
+        this.flashEnergy,
+      active: {
+        burstParticles:
+          this.burstParticles.length,
+        lightTrails:
+          this.lightTrails.length,
+        dropWaves:
+          this.dropWaves.length
+      },
+      stats: {
+        ...this.fxStats
+      }
+    };
+  },
+
+  emitFxEvent(
+    name,
+    detail
+  ) {
+    if (
+      typeof window.CustomEvent !==
+      "function"
+    ) {
+      return;
+    }
+
+    window.dispatchEvent(
+      new window.CustomEvent(
+        name,
+        { detail }
+      )
+    );
   }
 };
 
