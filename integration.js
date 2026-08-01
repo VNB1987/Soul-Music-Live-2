@@ -9,7 +9,7 @@
 */
 
 const SoulIntegration = {
-  version: "1.4.0-design-v2-step5",
+  version: "1.5.0-design-v2-step6",
 
   ready: false,
   starting: false,
@@ -56,6 +56,7 @@ const SoulIntegration = {
       this.initializeFrameNeon();
       this.initializeSmartBanner();
       this.initializeNowPlaying();
+      this.initializeMoments();
       this.initializeLiveCheck();
       this.syncPerformanceBudget();
       this.applyInitialCameraFrame();
@@ -127,6 +128,9 @@ const SoulIntegration = {
       nowPlaying:
         overrides.nowPlaying ||
         runtime?.SoulNowPlaying,
+      moments:
+        overrides.moments ||
+        runtime?.SoulMoments,
       liveCheck:
         overrides.liveCheck ||
         runtime?.SoulLiveCheck
@@ -152,6 +156,7 @@ const SoulIntegration = {
       "frameNeon",
       "smartBanner",
       "nowPlaying",
+      "moments",
       "liveCheck"
     ];
 
@@ -426,6 +431,37 @@ const SoulIntegration = {
     );
   },
 
+  initializeMoments() {
+    const module =
+      this.modules.moments;
+
+    if (!module?.init) {
+      return false;
+    }
+
+    return this.safeInit(
+      "moments",
+      () => module.init({
+        stage:
+          this.modules.sceneGraph
+            ?.getNode?.("stage")
+            ?.element ||
+          this.getRuntime()
+            ?.document
+            ?.getElementById?.("stage"),
+        sceneDirector:
+          this.modules.sceneDirector,
+        smartBanner:
+          this.modules.smartBanner,
+        nowPlaying:
+          this.modules.nowPlaying,
+        performanceEngine:
+          this.modules.performance,
+        autoStart: true
+      })
+    );
+  },
+
   initializeLiveCheck() {
     const module =
       this.modules.liveCheck;
@@ -446,6 +482,8 @@ const SoulIntegration = {
           this.modules.performance,
         nowPlaying:
           this.modules.nowPlaying,
+        moments:
+          this.modules.moments,
         autoRun: true,
         applyCalibration: true
       })
