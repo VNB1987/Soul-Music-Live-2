@@ -68,6 +68,13 @@ const EngineX = {
   },
 
   init() {
+    if (
+      window.SoulSceneGraph &&
+      !SoulSceneGraph.ready
+    ) {
+      SoulSceneGraph.init();
+    }
+
     this.cacheElements();
     this.initializeCanvases();
     this.fitStage();
@@ -82,7 +89,9 @@ const EngineX = {
     );
 
     this.updatePerformanceStatus(
-      "Engine: pregătit"
+      window.SoulSceneGraph?.ready
+        ? `Engine: pregătit • ${SoulSceneGraph.nodes.size} noduri`
+        : "Engine: eroare Scene Graph"
     );
   },
 
@@ -314,6 +323,9 @@ const EngineX = {
       translate(-50%, -50%)
       scale(${scale})
     `;
+
+    window.SoulSceneGraph
+      ?.requestSync?.();
   },
 
   bindKeyboardShortcuts() {
@@ -666,6 +678,10 @@ const EngineX = {
 
       fps:
         this.smoothedFps,
+
+      scene:
+        window.SoulSceneGraph
+          ?.getState?.() || null,
 
       qualityMultiplier:
         this.getQualityMultiplier(),
