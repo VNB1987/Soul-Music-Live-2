@@ -1,6 +1,6 @@
 $ErrorActionPreference = "Stop"
 
-$port = 8765
+$port = 8766
 $root = [System.IO.Path]::GetFullPath($PSScriptRoot)
 $rootPrefix = $root.TrimEnd(
   [System.IO.Path]::DirectorySeparatorChar
@@ -91,6 +91,8 @@ try {
 
     try {
       $stream = $client.GetStream()
+      $stream.ReadTimeout = 1500
+      $stream.WriteTimeout = 5000
 
       $reader =
         [System.IO.StreamReader]::new(

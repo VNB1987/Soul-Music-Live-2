@@ -32,7 +32,7 @@ SoulSceneGraph.reset();
 1. Descarcă proiectul pe calculatorul Windows.
 2. Deschide folderul și dă dublu-click pe `start-live.bat`.
 3. În TikTok LIVE Studio adaugă o sursă **Browser Source**.
-4. Folosește URL-ul `http://127.0.0.1:8765`.
+4. Folosește URL-ul `http://127.0.0.1:8766`.
 5. Setează sursa la **1920 × 1080** și **60 FPS**.
 6. În panoul Soul Music selectează **CABLE Output** pentru muzică.
 7. Selectează microfonul real pentru voce și activează separat cele două canale.
