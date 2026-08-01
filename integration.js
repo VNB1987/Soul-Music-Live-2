@@ -9,7 +9,7 @@
 */
 
 const SoulIntegration = {
-  version: "1.6.0-design-v2-step7",
+  version: "2.0.0-design-v2-final",
 
   ready: false,
   starting: false,
