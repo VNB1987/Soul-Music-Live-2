@@ -2,6 +2,26 @@
 
 Motor vizual audio-reactiv Full HD pentru TikTok LIVE Studio.
 
+## Design V2 — Pasul 8: release final și preflight LIVE
+
+Release-ul `2.0.0 • Build 2026.08.01` închide Design V2 cu o verificare finală
+accesibilă din butonul `Verifică LIVE`:
+
+- confirmă semnătura Design V2 Final și serverul local `127.0.0.1:8766`;
+- verifică scena 1920 × 1080, cele patru canvas-uri și formatul 16:9;
+- confirmă cele 11 motoare adaptive, memoria și autostartul;
+- verifică rutarea separată CABLE Output / microfon real;
+- testează bridge-ul Now Playing, presetul Live și performanța la 60 FPS;
+- afișează în panou maximum trei acțiuni clare dacă ceva necesită atenție.
+
+Launcherul verifică `release.json` înainte de a deschide browserul. Astfel, un
+server vechi rămas pe portul 8766 nu mai poate deschide silențios proiectul
+greșit. Toate fișierele sunt servite cu cache dezactivat, iar URL-ul final este
+`http://127.0.0.1:8766/index.html?build=2026.08.01-design-v2-final`.
+
+Pentru instalare, citește mai întâi `START-AICI.txt` și pornește exclusiv
+`start-live.bat` din folderul nou extras.
+
 ## Design V2 — Pasul 7: memorie și autostart sigur
 
 `memory.js` păstrează local preferințele operatorului între două porniri ale
