@@ -2,6 +2,19 @@
 
 Motor vizual audio-reactiv Full HD pentru TikTok LIVE Studio.
 
+## Design V2 — Pasul 5: Now Playing generos
+
+Now Playing este fixat sus, între cadrul vertical și zona TikTok, într-o bandă
+de 900 × 132 px care rămâne stabilă și nu mai urmează mișcarea camerei.
+
+- titlu adaptiv între 27 și 42 px, cu maximum două rânduri;
+- artist, sursă, logo/artwork și marcaj `ORIGINAL MUSIC`;
+- neon auriu permanent și accent roșu numai în `Red Voice`;
+- fără micșorarea automată care făcea titlul greu de citit;
+- tranziții line la schimbarea melodiei și ascundere pentru bridge gol;
+- zonă sigură: 23 px după cadrul stâng și minimum 105 px înainte de TikTok;
+- efectele costisitoare se reduc automat pe profilurile Performance/Emergency.
+
 ## Design V2 — Pasul 4: banner inteligent
 
 `smart-banner.js` înlocuiește rularea continuă greu de citit cu mesaje
