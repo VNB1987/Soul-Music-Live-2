@@ -693,6 +693,19 @@ const EngineX = {
   },
 
   getQualityMultiplier() {
+    const adaptivePerformance =
+      window.SoulPerformance;
+
+    if (
+      adaptivePerformance?.running &&
+      typeof adaptivePerformance
+        .getQualityMultiplier ===
+        "function"
+    ) {
+      return adaptivePerformance
+        .getQualityMultiplier();
+    }
+
     if (
       this.quality ===
       "performance"
@@ -751,6 +764,13 @@ const EngineX = {
   },
 
   adjustQuality() {
+    if (
+      window.SoulPerformance
+        ?.running
+    ) {
+      return this.quality;
+    }
+
     const previousQuality =
       this.quality;
 
