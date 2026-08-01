@@ -356,19 +356,31 @@ const EngineX = {
           this.resetControls();
         }
 
-        if (key === "1") {
+        if (
+          key === "1" &&
+          !event.shiftKey
+        ) {
           this.setMode("calm");
         }
 
-        if (key === "2") {
+        if (
+          key === "2" &&
+          !event.shiftKey
+        ) {
           this.setMode("live");
         }
 
-        if (key === "3") {
+        if (
+          key === "3" &&
+          !event.shiftKey
+        ) {
           this.setMode("party");
         }
 
-        if (key === "4") {
+        if (
+          key === "4" &&
+          !event.shiftKey
+        ) {
           this.setMode("legendary");
         }
       }
