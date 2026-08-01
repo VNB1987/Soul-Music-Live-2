@@ -12,13 +12,21 @@
 */
 
 const SoulLiveCheck = {
-  version: "0.8.0-stage8",
+  version: "2.0.0-design-v2-final",
+
+  release: {
+    id: "SOUL-MUSIC-LIVE-2-DESIGN-V2-FINAL",
+    version: "2.0.0",
+    build: "2026.08.01",
+    port: "8766"
+  },
 
   integration: null,
   engine: null,
   audio: null,
   performanceEngine: null,
   nowPlaying: null,
+  memory: null,
 
   running: false,
   completed: false,
@@ -32,6 +40,8 @@ const SoulLiveCheck = {
   eventsBound: false,
 
   statusElement: null,
+  detailsElement: null,
+  runButton: null,
 
   calibration: {
     mode: "live",
@@ -70,11 +80,29 @@ const SoulLiveCheck = {
       options.nowPlaying ||
       runtime?.SoulNowPlaying;
 
+    this.memory =
+      options.memory ||
+      runtime?.SoulMemory;
+
     this.statusElement =
       options.statusElement ||
       runtime?.document
         ?.getElementById?.(
           "liveReadinessStatus"
+        ) || null;
+
+    this.detailsElement =
+      options.detailsElement ||
+      runtime?.document
+        ?.getElementById?.(
+          "liveCheckDetails"
+        ) || null;
+
+    this.runButton =
+      options.runButton ||
+      runtime?.document
+        ?.getElementById?.(
+          "runLiveCheck"
         ) || null;
 
     this.bindEvents();
@@ -88,6 +116,10 @@ const SoulLiveCheck = {
 
     this.updateUi(
       "LIVE: se verifică sistemul...",
+      "checking"
+    );
+    this.updateDetails(
+      "Preflight final în așteptare...",
       "checking"
     );
 
@@ -150,14 +182,22 @@ const SoulLiveCheck = {
       "LIVE: verificare în desfășurare...",
       "checking"
     );
+    this.updateDetails(
+      "Verific release-ul, scena, audio și performanța...",
+      "checking"
+    );
+    this.setButtonRunning(true);
 
     this.checkIntegration();
+    await this.checkRelease();
     this.checkSceneGraph();
     this.checkCanvases();
     this.checkModules();
     this.checkViewport();
+    this.checkBrowserSource();
     this.checkAudioApi();
     await this.checkAudioDevices();
+    this.checkMemory();
     await this.checkBridge();
 
     const requestedDuration = Number(options.durationMs);
@@ -192,7 +232,9 @@ const SoulLiveCheck = {
     this.checkCanvases();
     this.checkModules();
     this.checkViewport();
+    this.checkBrowserSource();
     this.checkAudioApi();
+    this.checkMemory();
     this.checkPerformance();
     this.checkCalibration();
     this.finish();
@@ -218,6 +260,92 @@ const SoulLiveCheck = {
           ? "Toate motoarele sunt conectate"
           : "Integrarea nu este pregătită"
     });
+  },
+
+  async checkRelease() {
+    const runtime = this.getRuntime();
+    const protocol =
+      runtime?.location?.protocol || "";
+    const port =
+      runtime?.location?.port || "";
+    const servedLocally =
+      protocol === "http:" &&
+      ["127.0.0.1", "localhost"]
+        .includes(
+          runtime?.location?.hostname
+        );
+
+    if (!runtime?.fetch) {
+      this.addCheck({
+        id: "final-release",
+        label: "Release final",
+        status: "warn",
+        critical: false,
+        detail:
+          "Manifestul release nu poate fi citit"
+      });
+      return false;
+    }
+
+    try {
+      const response = await runtime.fetch(
+        `release.json?check=${Date.now()}`,
+        { cache: "no-store" }
+      );
+      const manifest =
+        response.ok
+          ? await response.json()
+          : null;
+      const valid =
+        manifest?.release ===
+          this.release.id &&
+        manifest?.version ===
+          this.release.version &&
+        Number(manifest?.port) ===
+          Number(this.release.port);
+
+      this.addCheck({
+        id: "final-release",
+        label: "Release final",
+        status:
+          valid
+            ? "pass"
+            : "fail",
+        critical: true,
+        detail:
+          valid
+            ? `Design V2 Final • ${manifest.build}`
+            : "Rulează o versiune veche sau incompletă"
+      });
+
+      this.addCheck({
+        id: "local-server",
+        label: "Server local",
+        status:
+          servedLocally &&
+          port === this.release.port
+            ? "pass"
+            : "warn",
+        critical: false,
+        detail:
+          servedLocally &&
+          port === this.release.port
+            ? "127.0.0.1:8766 • cache protejat"
+            : "Deschide proiectul cu start-live.bat"
+      });
+
+      return valid;
+    } catch (error) {
+      this.addCheck({
+        id: "final-release",
+        label: "Release final",
+        status: "warn",
+        critical: false,
+        detail:
+          "Pornește proiectul cu start-live.bat"
+      });
+      return false;
+    }
   },
 
   checkSceneGraph() {
@@ -388,6 +516,40 @@ const SoulLiveCheck = {
     });
   },
 
+  checkBrowserSource() {
+    const runtime = this.getRuntime();
+    const width = Number(
+      runtime?.innerWidth || 0
+    );
+    const height = Number(
+      runtime?.innerHeight || 0
+    );
+    const ratio =
+      height > 0
+        ? width / height
+        : 0;
+    const valid =
+      width > 0 &&
+      height > 0 &&
+      Math.abs(
+        ratio - 16 / 9
+      ) < 0.035;
+
+    this.addCheck({
+      id: "browser-source-ratio",
+      label: "Format Browser Source",
+      status:
+        valid
+          ? "pass"
+          : "warn",
+      critical: false,
+      detail:
+        valid
+          ? `${width} × ${height} • 16:9`
+          : "În TikTok setează 1920 × 1080"
+    });
+  },
+
   checkAudioApi() {
     const mediaDevices =
       this.getRuntime()
@@ -413,6 +575,33 @@ const SoulLiveCheck = {
         available
           ? "Dispozitivele audio pot fi accesate"
           : "Browserul nu oferă MediaDevices"
+    });
+  },
+
+  checkMemory() {
+    const state =
+      this.memory?.getState?.();
+    const running =
+      Boolean(state?.running);
+    const restored =
+      Boolean(state?.restored);
+
+    this.addCheck({
+      id: "engine-memory",
+      label: "Memorie și autostart",
+      status:
+        running && restored
+          ? "pass"
+          : running
+            ? "warn"
+            : "fail",
+      critical: true,
+      detail:
+        running && restored
+          ? "Setări validate și restaurate"
+          : running
+            ? "Așteaptă permisiunea audio"
+            : "Motorul de memorie este oprit"
     });
   },
 
@@ -491,6 +680,28 @@ const SoulLiveCheck = {
           : voiceUnknown
             ? "Selectează microfonul real"
             : `Nu folosi cablul virtual pentru voce: ${voiceLabel}`
+    });
+
+    const routesSeparated =
+      Boolean(
+        musicSelect?.value &&
+        voiceSelect?.value
+      ) &&
+      musicSelect.value !==
+        voiceSelect.value;
+
+    this.addCheck({
+      id: "separate-audio-routes",
+      label: "Separare muzică / voce",
+      status:
+        routesSeparated
+          ? "pass"
+          : "warn",
+      critical: false,
+      detail:
+        routesSeparated
+          ? "Canale audio independente"
+          : "Alege dispozitive diferite pentru muzică și voce"
     });
 
     const audioState =
@@ -780,6 +991,8 @@ const SoulLiveCheck = {
           : "ready"
         : "not-ready"
     );
+    this.renderSummary();
+    this.setButtonRunning(false);
 
     this.emit(
       "soulmusic:livecheckcomplete",
@@ -806,6 +1019,68 @@ const SoulLiveCheck = {
     }
   },
 
+  renderSummary() {
+    const attention =
+      this.checks.filter(
+        check =>
+          check.status !== "pass"
+      );
+
+    if (attention.length === 0) {
+      this.updateDetails(
+        `Toate cele ${this.checks.length} verificări au trecut. Poți intra LIVE.`,
+        "ready"
+      );
+      return true;
+    }
+
+    const summary = attention
+      .slice(0, 3)
+      .map(
+        check =>
+          `• ${check.label}: ${check.detail}`
+      )
+      .join("\n");
+    const remaining =
+      attention.length - 3;
+
+    this.updateDetails(
+      remaining > 0
+        ? `${summary}\n• plus încă ${remaining} atenționări`
+        : summary,
+      this.ready
+        ? "warning"
+        : "not-ready"
+    );
+    return true;
+  },
+
+  updateDetails(message, state) {
+    if (!this.detailsElement) {
+      return false;
+    }
+
+    this.detailsElement.textContent =
+      message;
+    this.detailsElement.dataset.state =
+      state;
+    return true;
+  },
+
+  setButtonRunning(running) {
+    if (!this.runButton) {
+      return false;
+    }
+
+    this.runButton.disabled =
+      Boolean(running);
+    this.runButton.textContent =
+      running
+        ? "Verific LIVE..."
+        : "Verifică LIVE";
+    return true;
+  },
+
   bindEvents() {
     const runtime =
       this.getRuntime();
@@ -818,6 +1093,14 @@ const SoulLiveCheck = {
     }
 
     this.eventsBound = true;
+
+    this.runButton
+      ?.addEventListener?.(
+        "click",
+        () => this.run({
+          durationMs: 2200
+        })
+      );
 
     runtime.addEventListener(
       "soulmusic:inputactivated",
@@ -859,6 +1142,9 @@ const SoulLiveCheck = {
   getState() {
     return {
       version: this.version,
+      release: {
+        ...this.release
+      },
       running: this.running,
       completed: this.completed,
       ready: this.ready,

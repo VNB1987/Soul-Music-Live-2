@@ -218,14 +218,7 @@ try {
         }
 
       $cacheControl =
-        if (
-          $extension -eq ".txt" -or
-          $extension -eq ".html"
-        ) {
-          "no-store, no-cache, must-revalidate"
-        } else {
-          "no-cache"
-        }
+        "no-store, no-cache, must-revalidate"
 
       $response = @{
         Stream = $stream
