@@ -17,7 +17,7 @@ start "Soul Music Local Server" powershell.exe -NoProfile -ExecutionPolicy Bypas
 
 timeout /t 2 /nobreak >nul
 
-start "" "http://127.0.0.1:8766/index.html?v=9.0"
+start "" "http://127.0.0.1:8766/index.html?v=8.1"
 
 echo Proiectul a pornit.
 echo.
