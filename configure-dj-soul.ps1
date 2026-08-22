@@ -12,7 +12,27 @@ Write-Host "Cheia ramane numai pe acest PC." -ForegroundColor Green
 Write-Host "Nu va fi trimisa sau salvata pe GitHub." -ForegroundColor Green
 Write-Host ""
 
-$apiKey = Read-Host "Lipeste cheia YouTube API"
+$secureApiKey = Read-Host "Lipeste cheia YouTube API (textul ramane ascuns)" -AsSecureString
+
+$apiKeyPointer = [IntPtr]::Zero
+
+try {
+  $apiKeyPointer =
+    [Runtime.InteropServices.Marshal]::SecureStringToBSTR(
+      $secureApiKey
+    )
+
+  $apiKey =
+    [Runtime.InteropServices.Marshal]::PtrToStringBSTR(
+      $apiKeyPointer
+    )
+} finally {
+  if ($apiKeyPointer -ne [IntPtr]::Zero) {
+    [Runtime.InteropServices.Marshal]::ZeroFreeBSTR(
+      $apiKeyPointer
+    )
+  }
+}
 
 if ([string]::IsNullOrWhiteSpace($apiKey)) {
   throw "Cheia YouTube API nu poate fi goala."
@@ -51,4 +71,3 @@ Write-Host "Playlist: $playlistId" -ForegroundColor White
 Write-Host ""
 Write-Host "Poti porni acum Engine X cu start-live.bat." -ForegroundColor Yellow
 Write-Host ""
-
