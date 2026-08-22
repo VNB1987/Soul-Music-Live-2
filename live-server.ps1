@@ -21,6 +21,15 @@ $mimeTypes = @{
   ".ico" = "image/x-icon"
 }
 
+$youtubeBridgePath =
+  Join-Path $root "youtube-bridge.ps1"
+
+if ([System.IO.File]::Exists(
+  $youtubeBridgePath
+)) {
+  . $youtubeBridgePath
+}
+
 function Write-Response {
   param(
     [System.Net.Sockets.NetworkStream]$Stream,
@@ -134,6 +143,74 @@ try {
         [System.Uri]::UnescapeDataString(
           $rawPath
         )
+
+      if (
+        $decodedPath -eq "/api/dj-soul/status" -or
+        $decodedPath -eq "/api/dj-soul/playlist"
+      ) {
+        if (
+          $method -ne "GET" -and
+          $method -ne "HEAD"
+        ) {
+          $body = ConvertTo-DJSoulJsonBytes ([ordered]@{
+            ready = $false
+            message = "Metoda HTTP nu este permisa."
+          })
+
+          $response = @{
+            Stream = $stream
+            StatusCode = 405
+            StatusText = "Method Not Allowed"
+            Body = $body
+            ContentType = "application/json; charset=utf-8"
+          }
+          Write-Response @response
+          continue
+        }
+
+        try {
+          $payload =
+            if ($decodedPath -eq "/api/dj-soul/status") {
+              Get-DJSoulStatus
+            } else {
+              Get-DJSoulPlaylist
+            }
+
+          $body =
+            if ($method -eq "HEAD") {
+              [byte[]]::new(0)
+            } else {
+              ConvertTo-DJSoulJsonBytes $payload
+            }
+
+          $response = @{
+            Stream = $stream
+            StatusCode = 200
+            StatusText = "OK"
+            Body = $body
+            ContentType = "application/json; charset=utf-8"
+            CacheControl = "no-store, no-cache, must-revalidate"
+          }
+          Write-Response @response
+        } catch {
+          $body = ConvertTo-DJSoulJsonBytes ([ordered]@{
+            ready = $false
+            message = "Nu am putut citi playlistul YouTube. Verifica cheia API si conexiunea la internet."
+          })
+
+          $response = @{
+            Stream = $stream
+            StatusCode = 502
+            StatusText = "Bad Gateway"
+            Body = $body
+            ContentType = "application/json; charset=utf-8"
+            CacheControl = "no-store"
+          }
+          Write-Response @response
+        }
+
+        continue
+      }
 
       if ($decodedPath -eq "/") {
         $decodedPath = "/index.html"

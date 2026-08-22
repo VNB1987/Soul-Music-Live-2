@@ -2,6 +2,28 @@
 
 Motor vizual audio-reactiv Full HD pentru TikTok LIVE Studio.
 
+## Faza 1 — YouTube → DJ Soul
+
+DJ Soul poate citi în regim read-only playlistul public `VNB-SOULMUSIC`
+prin YouTube Data API v3. Cheia API rămâne numai pe calculatorul Windows:
+
+1. Descarcă proiectul pe PC.
+2. Dă dublu-click pe `configure-dj-soul.bat`.
+3. Lipește cheia YouTube API când apare solicitarea.
+4. La Playlist ID apasă Enter pentru valoarea implicită
+   `PLedJ9SZ73vniuUjEsj5oPpog0bMWxUbQG`.
+5. Pornește Engine X cu `start-live.bat`.
+
+Fișierul local `dj-soul.local.json` este ignorat de Git și nu trebuie
+publicat. Serverul local păstrează cheia în afara browserului și expune doar
+statusul conexiunii și catalogul playlistului:
+
+- `/api/dj-soul/status`
+- `/api/dj-soul/playlist`
+
+În această fază DJ Soul doar citește catalogul. Nu poate adăuga, muta sau
+șterge videoclipuri și nu vorbește automat în LIVE.
+
 ## Etapa 0 — Scene Graph
 
 `scene-graph.js` definește sursa unică de adevăr pentru scena 1920 × 1080:
