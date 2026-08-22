@@ -52,6 +52,17 @@ $config = [ordered]@{
 $json = $config | ConvertTo-Json
 $utf8 = New-Object System.Text.UTF8Encoding($false)
 
+if ([System.IO.File]::Exists($configPath)) {
+  $existingConfig = Get-Item -LiteralPath $configPath -Force
+
+  if (
+    ($existingConfig.Attributes -band [System.IO.FileAttributes]::Hidden) -ne 0
+  ) {
+    $existingConfig.Attributes =
+      $existingConfig.Attributes -bxor [System.IO.FileAttributes]::Hidden
+  }
+}
+
 [System.IO.File]::WriteAllText(
   $configPath,
   $json,
@@ -59,7 +70,7 @@ $utf8 = New-Object System.Text.UTF8Encoding($false)
 )
 
 try {
-  $item = Get-Item $configPath
+  $item = Get-Item -LiteralPath $configPath -Force
   $item.Attributes = $item.Attributes -bor [System.IO.FileAttributes]::Hidden
 } catch {
   # Fisierul ramane protejat prin .gitignore chiar daca nu poate fi ascuns.
