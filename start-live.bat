@@ -6,18 +6,31 @@ cd /d "%~dp0"
 
 echo.
 echo ================================================
-echo   SOUL MUSIC LIVE - PORNIRE FULL HD
+echo   SOUL MUSIC LIVE - PORNIRE FULL HD + DJ SOUL
 echo ================================================
 echo.
 echo Server local: http://127.0.0.1:8766
+echo DJ Soul Bridge: http://127.0.0.1:8767
 echo TikTok LIVE Studio Browser Source: 1920 x 1080
 echo.
 
 start "Soul Music Local Server" powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0live-server.ps1"
 
-timeout /t 2 /nobreak >nul
+where node >nul 2>&1
+if errorlevel 1 (
+  echo.
+  echo ATENTIE: Node.js nu a fost gasit in PATH.
+  echo Engine X va porni, dar DJ Soul nu poate fi pornit automat.
+  echo.
+) else (
+  rem Folosim /D pentru directorul de lucru ca sa evitam problemele
+  rem Windows CMD cu spatii in calea proiectului.
+  start "DJ Soul Console" /D "%~dp0" cmd.exe /k node dj-soul-bridge.mjs
+)
 
-start "" "http://127.0.0.1:8766/index.html?v=8.1"
+timeout /t 3 /nobreak >nul
+
+start "" "http://127.0.0.1:8766/index.html?v=9.1-djsoul"
 
 echo Proiectul a pornit.
 echo.
@@ -26,7 +39,10 @@ echo http://127.0.0.1:8766
 echo.
 echo Latime: 1920   Inaltime: 1080   FPS: 60
 echo.
-echo Inchide fereastra "Soul Music Local Server" pentru oprire.
+echo DJ Soul porneste automat in fereastra separata "DJ Soul Console".
+echo Comenzile private pot fi scrise si direct in panoul Engine X.
+echo.
+echo Inchide ferestrele "Soul Music Local Server" si "DJ Soul Console" pentru oprire.
 echo.
 pause
 
