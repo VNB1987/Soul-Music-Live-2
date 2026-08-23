@@ -23,12 +23,14 @@ if errorlevel 1 (
   echo Engine X va porni, dar DJ Soul nu poate fi pornit automat.
   echo.
 ) else (
-  start "DJ Soul Console" cmd.exe /k "cd /d ""%~dp0"" && node ""%~dp0dj-soul-bridge.mjs"""
+  rem Folosim /D pentru directorul de lucru ca sa evitam problemele
+  rem Windows CMD cu spatii in calea proiectului.
+  start "DJ Soul Console" /D "%~dp0" cmd.exe /k node dj-soul-bridge.mjs
 )
 
-timeout /t 2 /nobreak >nul
+timeout /t 3 /nobreak >nul
 
-start "" "http://127.0.0.1:8766/index.html?v=9.0-djsoul"
+start "" "http://127.0.0.1:8766/index.html?v=9.1-djsoul"
 
 echo Proiectul a pornit.
 echo.
